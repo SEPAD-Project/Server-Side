@@ -1,30 +1,30 @@
 import mysql.connector
 
-def search_value(value):
+def search_value(value, host='localhost', user='root', password='ardbms', database='sap', 
+                search_by='username', data='password'):
     # connetcting to db
     db = mysql.connector.connect(
-        host="localhost",  
-        user="root",       
-        password="ardbms",  
-        database="sap"   
+        host=host,  
+        user=user,       
+        password=password,  
+        database=database  
     )
-
     cursor = db.cursor()
-
-
-
     cursor.execute('SELECT password FROM students WHERE username = %s', (value,))
 
     result = cursor.fetchone()
-
-    if result:
-        print(f'result is {result[0]}')
-    else:
-        print(f'wrong value{search_value}')
-
-    # بستن اتصال
+    # closing connectoin
     cursor.close()
     db.close()
 
+    if result:
+        # print(f'result in searching.py search_value func is --->>> {result[0]}')
+        return(f'{result[0]}')
+    else:
+        return(False)
 
-search_value(input('value : '))
+
+
+if __name__ == '__main__' :
+    x = input('value : ')
+    search_value(value=x)
