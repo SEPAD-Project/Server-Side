@@ -11,11 +11,11 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # Data
-data = ("Abolfazl", "Rashidian", "09233333", "1", "1", 1052)
+data = ("Abolfazl", "Rashidian", "09233333", "test", "pass", 1052, 1111111111, 'nhsch1')
 
 # query
 cursor.execute("""
-    INSERT INTO students (name, family, national_code, username, password, class)
+    INSERT INTO students (name, family, national_code, username, password, class, uid, school)
     VALUES (%s, %s, %s, %s, %s, %s)
 """, data)
 
