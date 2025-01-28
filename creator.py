@@ -23,7 +23,10 @@ cursor.execute("""
         family VARCHAR(255),
         national_code VARCHAR(255),
         username VARCHAR(255),
-        password VARCHAR(255)
+        password VARCHAR(255),
+        class VARCHAR(255),
+        uid VARCHAR(255),
+        school VARCHAR(255),
     )
 """)
 
