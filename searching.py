@@ -9,7 +9,7 @@ def search_value(value, host='localhost', user='root', password='ardbms', databa
         database=database 
     )
     cursor = db.cursor()
-    cursor.execute('SELECT name, family, password, class FROM students WHERE username = %s', (value,))
+    cursor.execute('SELECT name, family, password, username, class, school, uid, national_code class FROM students WHERE username = %s', (value,))
 
     result = cursor.fetchone()
     # closing connectoin
