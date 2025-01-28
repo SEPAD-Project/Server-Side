@@ -1,16 +1,15 @@
 import mysql.connector
 
-def search_value(value, host='localhost', user='root', password='ardbms', database='sap', 
-                search_by='username', data='password'):
+def search_value(value, host='localhost', user='root', password='ardbms', database='sap'):
     # connetcting to db
     db = mysql.connector.connect(
         host=host,  
         user=user,       
         password=password,  
-        database=database  
+        database=database 
     )
     cursor = db.cursor()
-    cursor.execute('SELECT password FROM students WHERE username = %s', (value,))
+    cursor.execute('SELECT name, family, password, class FROM students WHERE username = %s', (value,))
 
     result = cursor.fetchone()
     # closing connectoin
@@ -19,7 +18,7 @@ def search_value(value, host='localhost', user='root', password='ardbms', databa
 
     if result:
         # print(f'result in searching.py search_value func is --->>> {result[0]}')
-        return(f'{result[0]}')
+        return(result)
     else:
         return(False)
 
@@ -27,4 +26,4 @@ def search_value(value, host='localhost', user='root', password='ardbms', databa
 
 if __name__ == '__main__' :
     x = input('value : ')
-    search_value(value=x)
+    print(search_value(value=x))
