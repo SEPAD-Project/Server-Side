@@ -2,14 +2,15 @@ import mysql.connector
 
 
 db = mysql.connector.connect(
-    host="localhost",  
-    user="root",    
-    password="ardbms" 
+    host="185.4.28.110",  
+    user="root", # sapacc - ardbms
+    port=5000,   
+    password="sapprogram2583" 
 )
 
 cursor = db.cursor()
 
-cursor.execute("CREATE DATABASE IF NOT EXISTS school")
+cursor.execute("CREATE DATABASE IF NOT EXISTS sap")
 print('Database Created')
 
 # connect to database school
@@ -26,7 +27,7 @@ cursor.execute("""
         password VARCHAR(255),
         class VARCHAR(255),
         uid VARCHAR(255),
-        school VARCHAR(255),
+        school VARCHAR(255)
     )
 """)
 
