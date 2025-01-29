@@ -16,12 +16,20 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 
 # Data
-data = ("Abolfazl", "Rashidian", "09233333", "test", "pass", 1052, 1111111111, 'hnsch1')
+# data = ("Abolfazl", "Rashidian", "09233333", "test", "pass", 1052, 1111111111, 'hnsch1')
+
+# # query
+# cursor.execute("""
+#     INSERT INTO students (name, family, national_code, username, password, class, uid, school)
+#     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+# """, data)
+
+data = ("Mehdi", "Ebrahimi", "mhdi", "ebram")
 
 # query
 cursor.execute("""
-    INSERT INTO students (name, family, national_code, username, password, class, uid, school)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO teachers (name, family, username, password)
+    VALUES (%s, %s, %s, %s)
 """, data)
 
 # ثبت تغییرات

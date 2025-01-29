@@ -17,17 +17,28 @@ print('Database Created')
 db.database = "sap"
 
 # creating table students
+# cursor.execute("""
+#     CREATE TABLE IF NOT EXISTS students (
+#         id INT AUTO_INCREMENT PRIMARY KEY,
+#         name VARCHAR(255),
+#         family VARCHAR(255),
+#         national_code VARCHAR(255),
+#         username VARCHAR(255),
+#         password VARCHAR(255),
+#         class VARCHAR(255),
+#         uid VARCHAR(255),
+#         school VARCHAR(255)
+#     )
+# """)
+# print("Table [students] Created")
+
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS students (
+    CREATE TABLE IF NOT EXISTS teachers (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255),
         family VARCHAR(255),
-        national_code VARCHAR(255),
         username VARCHAR(255),
-        password VARCHAR(255),
-        class VARCHAR(255),
-        uid VARCHAR(255),
-        school VARCHAR(255)
+        password VARCHAR(255)
     )
 """)
 
@@ -35,7 +46,7 @@ cursor.execute("""
 cursor.close()
 db.close()
 
-print("Table [students] Created")
+print("Table [teachers] Created")
 
 
 
