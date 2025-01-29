@@ -8,10 +8,11 @@ app = Flask(__name__)
 
 # conecting to db
 db_config = {
-    'host': 'localhost',
+    'host': '185.4.28.110',
     'database': 'sap',
+    'port' :  5000,
     'user': 'root',
-    'password': 'ardbms'
+    'password': 'sapprogram2583'
 }
 
 base_path = r'C:\sap-project\server'
