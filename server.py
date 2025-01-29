@@ -62,5 +62,5 @@ def upload_text():
 
 if __name__ == '__main__':
     # running wsgiserver
-    http_server = WSGIServer(('0.0.0.0', 5000), app)
+    http_server = WSGIServer(('0.0.0.0', 5005), app)
     http_server.serve_forever()
