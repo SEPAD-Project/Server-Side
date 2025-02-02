@@ -13,12 +13,14 @@ def search_value(value, person, host='localhost', user='root', password='ardbms'
     password="sapprogram2583",
     database=database
     )
+    value = str(value)
     cursor = db.cursor()
     if person == 'student' :
-        cursor.execute("SELECT COUNT(*) FROM students WHERE username = %s", (value,))
+        cursor.execute("SELECT COUNT(*) FROM students WHERE student_national_code = '123'")
         result = cursor.fetchone()
+        print(result)
         if result[0] > 0:
-            cursor.execute('SELECT name, family, password, username, class, school, uid, national_code class FROM students WHERE username = %s', (value,))
+            cursor.execute('SELECT student_name, student_family, student_password, class_code, school_code, student_national_code class FROM students WHERE student_national_code = %s', (value,))
 
             result = cursor.fetchone()
             cursor.close()
