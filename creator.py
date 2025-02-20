@@ -17,36 +17,36 @@ print('Database Created')
 db.database = "sap"
 
 # creating table students
-# cursor.execute("""
-#     CREATE TABLE IF NOT EXISTS students (
-#         id INT AUTO_INCREMENT PRIMARY KEY,
-#         name VARCHAR(255),
-#         family VARCHAR(255),
-#         national_code VARCHAR(255),
-#         username VARCHAR(255),
-#         password VARCHAR(255),
-#         class VARCHAR(255),
-#         uid VARCHAR(255),
-#         school VARCHAR(255)
-#     )
-# """)
-# print("Table [students] Created")
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS students (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        student_name VARCHAR(255),
+        student_family VARCHAR(255),
+        student_national_code VARCHAR(255),
+        student_password VARCHAR(255),
+        class_code VARCHAR(255),
+        school_code VARCHAR(255)
+    )
+""")
+print("Table [students] Created")
 
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS teachers (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255),
-        family VARCHAR(255),
-        username VARCHAR(255),
-        password VARCHAR(255)
+        teacher_name VARCHAR(255),
+        teacher_family VARCHAR(255),
+        teacher_national_code VARCHAR(255),
+        teacher_password VARCHAR(255),
+        teacher_classes VARCHAR(255)
     )
 """)
+print("Table [teachers] Created")
+
 
 # closing connection
 cursor.close()
 db.close()
 
-print("Table [teachers] Created")
 
 
 

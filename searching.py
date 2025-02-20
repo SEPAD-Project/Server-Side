@@ -36,10 +36,10 @@ def search_value(value, person, host='localhost', user='root', password='ardbms'
             return ('not found')
         
     elif person == 'teacher' :
-        cursor.execute("SELECT COUNT(*) FROM teachers WHERE username = %s", (value,))
+        cursor.execute("SELECT COUNT(*) FROM teachers WHERE teacher_national_code = %s", (value,))
         result = cursor.fetchone()
         if result[0] > 0: # if user exist, return his/her information including password
-            cursor.execute('SELECT name, family, password FROM teachers WHERE username = %s', (value,))
+            cursor.execute('SELECT teacher_name, teacher_family, teacher_password, teacher_classes FROM teachers WHERE teacher_national_code = %s', (value,))
             result = cursor.fetchone()
             cursor.close()
             db.close()
