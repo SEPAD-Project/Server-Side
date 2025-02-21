@@ -1,6 +1,6 @@
 import mysql.connector
 
-def search_value(value, person, host='localhost', user='root', password='ardbms', database='sap'):
+def get_values_by_username(value, person, host='localhost', user='root', password='ardbms', database='sap'):
     # connetcting to db
     db = mysql.connector.connect(
         # host=host,  
@@ -16,18 +16,18 @@ def search_value(value, person, host='localhost', user='root', password='ardbms'
     value = str(value)
     cursor = db.cursor()
     if person == 'student' :
-        cursor.execute("SELECT COUNT(*) FROM students WHERE student_national_code = '123'")
+        cursor.execute("SELECT COUNT(*) FROM students WHERE student_national_code = '{}'".format(value))
         result = cursor.fetchone()
         print(result)
         if result[0] > 0:
             cursor.execute('SELECT student_name, student_family, student_password, class_code, school_code, student_national_code class FROM students WHERE student_national_code = %s', (value,))
 
-            result = cursor.fetchone()
+            udata = cursor.fetchone()
             cursor.close()
             db.close()
 
-            if result:
-                return(result)
+            if udata:
+                return(udata)
             else:
                 return(False)
         else:
@@ -54,4 +54,4 @@ def search_value(value, person, host='localhost', user='root', password='ardbms'
 
 if __name__ == '__main__' :
     x = input('value : ')
-    print(search_value(value=x, person='student'))
+    print(get_values_by_username(value=x, person='student'))
