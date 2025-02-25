@@ -26,7 +26,7 @@ def getting_pass_from_db(username):
         connection.close()
         return password_in_db
     except Error as e:
-        print(f"error while connectoin to db {e}")
+        print(f"error while connectoin to db \n{e}")
         return None
 
 # get and save data
@@ -41,11 +41,11 @@ def upload_text():
     print(username)
     print(password)
 
-
-    if getting_pass_from_db(username) != password:
+    correct_pass = getting_pass_from_db(username)
+    if correct_pass != password:
         return jsonify({"Error": "incorrect data"}), 401
     
-    elif getting_pass_from_db(username) == password:
+    elif correct_pass == password:
         # make folder and save text to file
         school_path = os.path.join(base_path, school_name)
         class_path = os.path.join(school_path, class_code)
