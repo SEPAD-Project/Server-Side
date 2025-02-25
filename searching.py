@@ -20,7 +20,7 @@ def get_values_by_username(value, person, host='localhost', user='root', passwor
         result = cursor.fetchone()
         print(result)
         if result[0] > 0:
-            cursor.execute('SELECT student_name, student_family, student_password, class_code, school_code, student_national_code class FROM students WHERE student_national_code = %s', (value,))
+            cursor.execute('SELECT student_name, student_family, student_password, class_code, student_national_code, school_name class FROM students WHERE student_national_code = %s', (value,))
 
             udata = cursor.fetchone()
             cursor.close()
@@ -52,6 +52,42 @@ def get_values_by_username(value, person, host='localhost', user='root', passwor
             db.close()
             return ('not found') # returning not found if user not exists
 
+def get_class_name(school_code):
+    '''Returns school name by its code'''
+    db = mysql.connector.connect(
+    host="185.4.28.110",  
+    user="root", 
+    port=5000,   
+    password="sapprogram2583",
+    database='sap'
+    )
+    cursor = db.cursor()
+    cursor.execute(f'SELECT school_name FROM schools WHERE school_code = {school_code}')
+    result = cursor.fetchone()
+    print(f'school code is {school_code}')
+    print(result)
+    return result[0]
+
+def get_students_name_by_national_code(national_code):
+    print(national_code)
+    db = mysql.connector.connect(
+    host="185.4.28.110",  
+    user="root", 
+    port=5000,   
+    password="sapprogram2583",
+    database='sap'
+    )
+    cursor = db.cursor()
+    cursor.execute(f'SELECT student_name, student_family FROM students WHERE student_national_code = {national_code}')
+    result = cursor.fetchone()
+    if result is not None:
+        name = result[0] + ' ' + result[1]
+        return name
+    else:
+        print(result)
+        
+
 if __name__ == '__main__' :
-    x = input('value : ')
-    print(get_values_by_username(value=x, person='student'))
+    # x = input('value : ')
+    # print(get_values_by_username(value=x, person='student'))
+    get_students_name_by_national_code('09295')

@@ -23,10 +23,10 @@ data = ("mehrdad", 'najafi', 'mhrd', 'pass', str(classes))
 
 # db.commit()
 
-data = ('Abolfazl', 'Rashidian', '0929577777', 'stpass', '1052xx', 'hn1xxx')
+data = ('Mehdi', 'zamani', '09299', 'stpass', '7b#52-42-54-4a', '123', 'hn1')
 cursor.execute("""
-    INSERT INTO students (student_name, student_family, student_national_code, student_password, class_code, school_code)
-    VALUES (%s, %s, %s, %s, %s, %s)
+    INSERT INTO students (student_name, student_family, student_national_code, student_password, class_code, school_code, school_name)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
 """, data)
 
 db.commit()
