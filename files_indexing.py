@@ -32,7 +32,11 @@ def get_last_message():
     class_code = data.get("class_code")
     student_name = data.get("student_name")
 
+    class_path = os.path.join(base_path, school_name, class_code)
     student_file = os.path.join(base_path, school_name, class_code, f"{student_name}.txt")
+    print(class_path)
+    if not os.path.exists(class_path):
+        return jsonify({"error": "class not found"}), 404
 
     if not os.path.exists(student_file):
         return jsonify({"error": "Student not found"}), 404
