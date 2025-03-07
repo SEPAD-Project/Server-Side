@@ -14,8 +14,7 @@ def validate_parameters(data):
 def get_student_path(school, class_name, student_id):
     """Generate file path based on parameters"""
     base_dir = os.path.join(
-        os.getcwd(),
-        'schools',
+        'C:\sap-project\server',
         school.replace(' ', '_'),
         class_name.replace(' ', '_')
     )
@@ -72,4 +71,4 @@ def get_data():
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5002, threaded=True)
