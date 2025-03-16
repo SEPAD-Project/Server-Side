@@ -17,5 +17,14 @@ def edit_school(old_school_name, new_school_name):
     except FileNotFoundError:
         print(f"School '{old_school_name}' does not exist.")
 
+# Function to delete the school directory
+def delete_school(school_name):
+    try:
+        os.rmdir(school_name)
+        print(f"School '{school_name}' deleted successfully.")
+    except FileNotFoundError:
+        print(f"School '{school_name}' does not exist.")
+    except OSError:
+        print(f"School '{school_name}' is not empty.")
 
 
