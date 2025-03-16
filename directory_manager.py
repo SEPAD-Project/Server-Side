@@ -48,3 +48,14 @@ def edit_class(school_name, old_class_name, new_class_name):
     except FileNotFoundError:
         print(f"Class '{old_class_name}' does not exist in school '{school_name}'.")
 
+# Function to delete a class directory
+def delete_class(school_name, class_name):
+    class_path = os.path.join(school_name, class_name)
+    try:
+        os.rmdir(class_path)
+        print(f"Class '{class_name}' deleted from school '{school_name}' successfully.")
+    except FileNotFoundError:
+        print(f"Class '{class_name}' does not exist in school '{school_name}'.")
+    except OSError:
+        print(f"Class '{class_name}' is not empty.")
+
