@@ -74,3 +74,18 @@ def create_student(school_name, class_name, student_name):
     except FileNotFoundError:
         print(f"Class '{class_name}' does not exist in school '{school_name}'.")
 
+# Function to edit the name of a student
+def edit_student(school_name, class_name, old_student_name, new_student_name):
+    class_path = os.path.join(school_name, class_name)
+    old_student_json_path = os.path.join(class_path, f"{old_student_name}.json")
+    old_student_txt_path = os.path.join(class_path, f"{old_student_name}.txt")
+    new_student_json_path = os.path.join(class_path, f"{new_student_name}.json")
+    new_student_txt_path = os.path.join(class_path, f"{new_student_name}.txt")
+    
+    try:
+        os.rename(old_student_json_path, new_student_json_path)
+        os.rename(old_student_txt_path, new_student_txt_path)
+        print(f"Student renamed from '{old_student_name}' to '{new_student_name}' in class '{class_name}' of school '{school_name}' successfully.")
+    except FileNotFoundError:
+        print(f"Student '{old_student_name}' does not exist in class '{class_name}' of school '{school_name}'.")
+
