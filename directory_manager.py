@@ -59,3 +59,18 @@ def delete_class(school_name, class_name):
     except OSError:
         print(f"Class '{class_name}' is not empty.")
 
+# Function to create a student with JSON and TXT files
+def create_student(school_name, class_name, student_name):
+    class_path = os.path.join(school_name, class_name)
+    student_json_path = os.path.join(class_path, f"{student_name}.json")
+    student_txt_path = os.path.join(class_path, f"{student_name}.txt")
+    
+    try:
+        with open(student_json_path, 'w') as json_file:
+            json.dump({"name": student_name}, json_file)
+        with open(student_txt_path, 'w') as txt_file:
+            txt_file.write(f"Student Name: {student_name}\n")
+        print(f"Student '{student_name}' created in class '{class_name}' of school '{school_name}' successfully.")
+    except FileNotFoundError:
+        print(f"Class '{class_name}' does not exist in school '{school_name}'.")
+
