@@ -38,3 +38,13 @@ def create_class(school_name, class_name):
     except FileNotFoundError:
         print(f"School '{school_name}' does not exist.")
 
+# Function to edit the name of a class directory
+def edit_class(school_name, old_class_name, new_class_name):
+    old_class_path = os.path.join(school_name, old_class_name)
+    new_class_path = os.path.join(school_name, new_class_name)
+    try:
+        os.rename(old_class_path, new_class_path)
+        print(f"Class renamed from '{old_class_name}' to '{new_class_name}' in school '{school_name}' successfully.")
+    except FileNotFoundError:
+        print(f"Class '{old_class_name}' does not exist in school '{school_name}'.")
+
