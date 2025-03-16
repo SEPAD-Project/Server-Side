@@ -89,3 +89,24 @@ def edit_student(school_name, class_name, old_student_name, new_student_name):
     except FileNotFoundError:
         print(f"Student '{old_student_name}' does not exist in class '{class_name}' of school '{school_name}'.")
 
+# Function to delete a student
+def delete_student(school_name, class_name, student_name):
+    class_path = os.path.join(school_name, class_name)
+    student_json_path = os.path.join(class_path, f"{student_name}.json")
+    student_txt_path = os.path.join(class_path, f"{student_name}.txt")
+    
+    try:
+        os.remove(student_json_path)
+        os.remove(student_txt_path)
+        print(f"Student '{student_name}' deleted from class '{class_name}' of school '{school_name}' successfully.")
+    except FileNotFoundError:
+        print(f"Student '{student_name}' does not exist in class '{class_name}' of school '{school_name}'.")
+
+# Example usage
+create_school("MySchool")
+create_class("MySchool", "ClassA")
+create_student("MySchool", "ClassA", "JohnDoe")
+edit_student("MySchool", "ClassA", "JohnDoe", "JaneDoe")
+delete_student("MySchool", "ClassA", "JaneDoe")
+delete_class("MySchool", "ClassA")
+delete_school("MySchool")
