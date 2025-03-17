@@ -1,12 +1,16 @@
 import os
 import json
+import shutil
 
 # Define the base path where all schools will be created
 BASE_PATH = "C://sap-project//schools"
 
 # Ensure the base path exists
 if not os.path.exists(BASE_PATH):
-    os.makedirs(BASE_PATH)
+    try:
+        os.makedirs(BASE_PATH)
+    except PermissionError:
+        print(f"Permission denied .")
 
 # Function to create a school directory
 def create_school(school_code):
@@ -35,12 +39,10 @@ def edit_school(old_school_code, new_school_code):
 def delete_school(school_code):
     school_path = os.path.join(BASE_PATH, school_code)
     try:
-        os.rmdir(school_path)
-        print(f"School '{school_code}' deleted successfully from '{school_path}'.")
+        shutil.rmtree(school_path)  
+        print(f"School '{school_code}' and its contents deleted successfully from '{school_path}'.")
     except FileNotFoundError:
         print(f"School '{school_code}' does not exist at '{school_path}'.")
-    except OSError:
-        print(f"School '{school_code}' is not empty at '{school_path}'.")
     except PermissionError:
         print(f"Permission denied: Unable to delete school '{school_code}' at '{school_path}'.")
 
@@ -73,12 +75,10 @@ def edit_class(school_code, old_class_code, new_class_code):
 def delete_class(school_code, class_code):
     class_path = os.path.join(BASE_PATH, school_code, class_code)
     try:
-        os.rmdir(class_path)
+        shutil.rmtree(class_path)  
         print(f"Class '{class_code}' deleted from school '{school_code}' successfully at '{class_path}'.")
     except FileNotFoundError:
         print(f"Class '{class_code}' does not exist in school '{school_code}' at '{class_path}'.")
-    except OSError:
-        print(f"Class '{class_code}' is not empty at '{class_path}'.")
     except PermissionError:
         print(f"Permission denied: Unable to delete class '{class_code}' in school '{school_code}' at '{class_path}'.")
 
