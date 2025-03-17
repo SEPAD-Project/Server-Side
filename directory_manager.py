@@ -7,6 +7,7 @@ from log_handler import log_message
 BASE_PATH = r"C:\sap-project\schools"
 
 def out(x):
+    """Prints the message and logs it using log_handler module."""
     print(x)
     log_message(x)
 
@@ -18,8 +19,14 @@ if not os.path.exists(BASE_PATH):
     except PermissionError:
         out('Permission denied while creating base path >> C://sap-project//schools')
 
-# Function to create a school directory
+# ---------- School Management Functions ---------- #
 def create_school(school_code):
+    """
+    Creates a new school directory.
+    
+    Parameters:
+        school_code (str): Unique identifier for the school (e.g., '500125')
+    """
     school_path = os.path.join(BASE_PATH, school_code)
     try:
         os.mkdir(school_path)
@@ -29,8 +36,15 @@ def create_school(school_code):
     except PermissionError:
         out(f"Permission denied: Unable to create school '{school_code}' at '{school_path}'.")
 
-# Function to edit the code of the school directory
+
 def edit_school(old_school_code, new_school_code):
+    """
+    Renames an existing school directory.
+    
+    Parameters:
+        old_school_code (str): Current school name (e.g., '500125')
+        new_school_code (str): New school name (e.g., '500126')
+    """
     old_school_path = os.path.join(BASE_PATH, old_school_code)
     new_school_path = os.path.join(BASE_PATH, new_school_code)
     try:
@@ -41,8 +55,14 @@ def edit_school(old_school_code, new_school_code):
     except PermissionError:
         out(f"Permission denied: Unable to rename school '{old_school_code}' to '{new_school_code}'.")
 
-# Function to delete the school directory
+
 def delete_school(school_code):
+    """
+    Permanently deletes a school directory and all its contents.
+    
+    Parameters:
+        school_code (str): Name of the school to delete (e.g., '500125')
+    """
     school_path = os.path.join(BASE_PATH, school_code)
     try:
         shutil.rmtree(school_path)  
@@ -52,8 +72,16 @@ def delete_school(school_code):
     except PermissionError:
         out(f"Permission denied: Unable to delete school '{school_code}' at '{school_path}'.")
 
-# Function to create a class directory inside the school directory
+
+# ---------- Class Management Functions ---------- #
 def create_class(school_code, class_name):
+    """
+    Creates a new class directory inside a school.
+    
+    Parameters:
+        school_code (str): Parent school name (e.g., '500125')
+        class_name (str): Name of the class to create (e.g., '1051')
+    """
     class_path = os.path.join(BASE_PATH, school_code, class_name)
     try:
         os.mkdir(class_path)
@@ -65,8 +93,16 @@ def create_class(school_code, class_name):
     except PermissionError:
         out(f"Permission denied: Unable to create class '{class_name}' in school '{school_code}' at '{class_path}'.")
 
-# Function to edit the code of a class directory
+
 def edit_class(school_code, old_class_name, new_class_name):
+    """
+    Renames an existing class directory.
+    
+    Parameters:
+        school_code (str): Parent school name (e.g., '500125')
+        old_class_name (str): Current class name (e.g., '1051')
+        new_class_name (str): New class name (e.g., '1052')
+    """
     old_class_path = os.path.join(BASE_PATH, school_code, old_class_name)
     new_class_path = os.path.join(BASE_PATH, school_code, new_class_name)
     try:
@@ -77,8 +113,15 @@ def edit_class(school_code, old_class_name, new_class_name):
     except PermissionError:
         out(f"Permission denied: Unable to rename class '{old_class_name}' to '{new_class_name}' in school '{school_code}'.")
 
-# Function to delete a class directory
+
 def delete_class(school_code, class_name):
+    """
+    Permanently deletes a class directory and all its contents.
+    
+    Parameters:
+        school_code (str): Parent school name (e.g., '500125')
+        class_name (str): Name of the class to delete (e.g., '1051')
+    """
     class_path = os.path.join(BASE_PATH, school_code, class_name)
     try:
         shutil.rmtree(class_path)  
@@ -88,8 +131,17 @@ def delete_class(school_code, class_name):
     except PermissionError:
         out(f"Permission denied: Unable to delete class '{class_name}' in school '{school_code}' at '{class_path}'.")
 
-# Function to create a student with JSON and TXT files
+
+# ---------- Student Management Functions ---------- #
 def create_student(school_code, class_name, student_code):
+    """
+    Creates student record with JSON and TXT files.
+    
+    Parameters:
+        school_code (str): Parent school name (e.g., '500125')
+        class_name (str): Parent class name (e.g., '1052')
+        student_code (str): Unique student identifier (e.g., '09295')
+    """
     class_path = os.path.join(BASE_PATH, school_code, class_name)
     student_json_path = os.path.join(class_path, f"{student_code}.json")
     student_txt_path = os.path.join(class_path, f"{student_code}.txt")
@@ -105,8 +157,17 @@ def create_student(school_code, class_name, student_code):
     except PermissionError:
         out(f"Permission denied: Unable to create student '{student_code}' in class '{class_name}' of school '{school_code}' at '{class_path}'.")
 
-# Function to edit the name of a student
+
 def edit_student(school_code, class_name, old_student_code, new_student_code):
+    """
+    Renames student files .
+    
+    Parameters:
+        school_code (str): Parent school name (e.g., '500125')
+        class_name (str): Parent class name (e.g., '1051')
+        old_student_code (str): Current student identifier (e.g., '09295')
+        new_student_code (str): New student identifier (e.g., '09296')
+    """
     class_path = os.path.join(BASE_PATH, school_code, class_name)
     old_student_json_path = os.path.join(class_path, f"{old_student_code}.json")
     old_student_txt_path = os.path.join(class_path, f"{old_student_code}.txt")
@@ -122,8 +183,16 @@ def edit_student(school_code, class_name, old_student_code, new_student_code):
     except PermissionError:
         out(f"Permission denied: Unable to rename student '{old_student_code}' to '{new_student_code}' in class '{class_name}' of school '{school_code}'.")
 
-# Function to delete a student
+
 def delete_student(school_code, class_name, student_code):
+    """
+    Deletes student records (JSON and TXT files).
+    
+    Parameters:
+        school_code (str): Parent school name (e.g., '500125')
+        class_name (str): Parent class name (e.g., '1051')
+        student_code (str): Student identifier to delete (e.g., '09295')
+    """
     class_path = os.path.join(BASE_PATH, school_code, class_name)
     student_json_path = os.path.join(class_path, f"{student_code}.json")
     student_txt_path = os.path.join(class_path, f"{student_code}.txt")
@@ -137,8 +206,10 @@ def delete_student(school_code, class_name, student_code):
     except PermissionError:
         out(f"Permission denied: Unable to delete student '{student_code}' in class '{class_name}' of school '{school_code}' at '{class_path}'.")
 
+
 # Example usage
 if __name__ == "__main__":
+    # Sample workflow
     create_school("MySchool")
     create_class("MySchool", "ClassA")
     create_student("MySchool", "ClassA", "JohnDoe")
