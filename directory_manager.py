@@ -20,7 +20,7 @@ if not os.path.exists(BASE_PATH):
         out('Permission denied while creating base path >> C://sap-project//schools')
 
 # ---------- School Management Functions ---------- #
-def create_school(school_code):
+def dm_create_school(school_code):
     """
     Creates a new school directory.
     
@@ -37,7 +37,7 @@ def create_school(school_code):
         out(f"Permission denied: Unable to create school '{school_code}' at '{school_path}'.")
 
 
-def edit_school(old_school_code, new_school_code):
+def dm_edit_school(old_school_code, new_school_code):
     """
     Renames an existing school directory.
     
@@ -56,7 +56,7 @@ def edit_school(old_school_code, new_school_code):
         out(f"Permission denied: Unable to rename school '{old_school_code}' to '{new_school_code}'.")
 
 
-def delete_school(school_code):
+def dm_delete_school(school_code):
     """
     Permanently deletes a school directory and all its contents.
     
@@ -74,7 +74,7 @@ def delete_school(school_code):
 
 
 # ---------- Class Management Functions ---------- #
-def create_class(school_code, class_name):
+def dm_create_class(school_code, class_name):
     """
     Creates a new class directory inside a school.
     
@@ -94,7 +94,7 @@ def create_class(school_code, class_name):
         out(f"Permission denied: Unable to create class '{class_name}' in school '{school_code}' at '{class_path}'.")
 
 
-def edit_class(school_code, old_class_name, new_class_name):
+def dm_edit_class(school_code, old_class_name, new_class_name):
     """
     Renames an existing class directory.
     
@@ -114,7 +114,7 @@ def edit_class(school_code, old_class_name, new_class_name):
         out(f"Permission denied: Unable to rename class '{old_class_name}' to '{new_class_name}' in school '{school_code}'.")
 
 
-def delete_class(school_code, class_name):
+def dm_delete_class(school_code, class_name):
     """
     Permanently deletes a class directory and all its contents.
     
@@ -133,7 +133,7 @@ def delete_class(school_code, class_name):
 
 
 # ---------- Student Management Functions ---------- #
-def create_student(school_code, class_name, student_code):
+def dm_create_student(school_code, class_name, student_code):
     """
     Creates student record with JSON and TXT files.
     
@@ -158,7 +158,7 @@ def create_student(school_code, class_name, student_code):
         out(f"Permission denied: Unable to create student '{student_code}' in class '{class_name}' of school '{school_code}' at '{class_path}'.")
 
 
-def edit_student(school_code, class_name, old_student_code, new_student_code):
+def dm_edit_student(school_code, class_name, old_student_code, new_student_code):
     """
     Renames student files .
     
@@ -184,7 +184,7 @@ def edit_student(school_code, class_name, old_student_code, new_student_code):
         out(f"Permission denied: Unable to rename student '{old_student_code}' to '{new_student_code}' in class '{class_name}' of school '{school_code}'.")
 
 
-def delete_student(school_code, class_name, student_code):
+def dm_delete_student(school_code, class_name, student_code):
     """
     Deletes student records (JSON and TXT files).
     
@@ -210,10 +210,10 @@ def delete_student(school_code, class_name, student_code):
 # Example usage
 if __name__ == "__main__":
     # Sample workflow
-    create_school("MySchool")
-    create_class("MySchool", "ClassA")
-    create_student("MySchool", "ClassA", "JohnDoe")
-    edit_student("MySchool", "ClassA", "JohnDoe", "JaneDoe")
-    delete_student("MySchool", "ClassA", "JaneDoe")
-    delete_class("MySchool", "ClassA")
-    delete_school("MySchool")
+    dm_create_school("MySchool")
+    dm_create_class("MySchool", "ClassA")
+    dm_create_student("MySchool", "ClassA", "JohnDoe")
+    dm_edit_student("MySchool", "ClassA", "JohnDoe", "JaneDoe")
+    dm_delete_student("MySchool", "ClassA", "JaneDoe")
+    dm_delete_class("MySchool", "ClassA")
+    dm_delete_school("MySchool")
