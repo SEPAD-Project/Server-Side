@@ -4,7 +4,7 @@ import shutil
 from log_handler import log_message
 
 # Define the base path where all schools will be created
-BASE_PATH = r"C:\sap-project\schools"
+BASE_PATH = r"C:\sap-project\server\schools"
 
 def out(x):
     """Prints the message and logs it using log_handler module."""
@@ -15,9 +15,9 @@ def out(x):
 if not os.path.exists(BASE_PATH):
     try:
         os.makedirs(BASE_PATH)
-        out('base path created >> C://sap-project//schools')
+        out('base path created >> C://sap-project//server//schools')
     except PermissionError:
-        out('Permission denied while creating base path >> C://sap-project//schools')
+        out('Permission denied while creating base path >> C://sap-project//server//schools')
 
 # ---------- School Management Functions ---------- #
 def dm_create_school(school_code):
