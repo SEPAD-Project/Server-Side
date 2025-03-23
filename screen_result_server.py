@@ -2,6 +2,13 @@ import os
 import json
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import BadRequest
+import configparser
+
+config_path = os.path.join('config.ini')
+config = configparser.ConfigParser()
+config.read(config_path)
+base_path = config['Server']['schools_path']
+port = config['Server']['screen_result_server_port']
 
 app = Flask(__name__)
 
@@ -14,7 +21,7 @@ def validate_parameters(data):
 def get_student_path(school, class_name, student_id):
     """Generate file path based on parameters"""
     base_dir = os.path.join(
-        'C:\sap-project\server',
+        base_path,
         school.replace(' ', '_'),
         class_name.replace(' ', '_')
     )
@@ -71,4 +78,4 @@ def get_data():
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002, threaded=True)
+    app.run(host='0.0.0.0', port=port, threaded=True)

@@ -1,10 +1,16 @@
 from flask import Flask, request, jsonify
-import os
+import os 
+import configparser
+
+config_path = os.path.join(os.path.dirname(__file__), '../config.ini')
+config = configparser.ConfigParser()
+config.read(config_path)
+
+base_path = config['Server']['schools_path']
+port = config['Server']['file_indexing_port']
 
 app = Flask(__name__)
 
-# base path
-base_path = r'C:\sap-project\server'
 
 # API for getting students list
 @app.route('/get_students', methods=['POST'])
@@ -49,4 +55,4 @@ def get_last_message():
     return jsonify({"student": student_name, "message": last_message})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=port)

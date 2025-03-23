@@ -1,6 +1,14 @@
 from flask import Flask, request, jsonify
 import cv2
 import os
+import configparser
+
+config_path = os.path.join(os.path.dirname(__file__), '../config.ini')
+config = configparser.ConfigParser()
+config.read(config_path)
+
+port = config['Server']['frame_server_port']
+base_path = config['Server']['schools_path']
 
 app = Flask(__name__)
 
@@ -32,7 +40,7 @@ def get_student_image():
             return jsonify({"error": "Missing required fields (school_code, class_name, national_code)"}), 400
 
         # Build the school directory path
-        school_dir = f"C://sap-project//schools//{school_code}"
+        school_dir = f"{base_path}{school_code}"
         if not os.path.exists(school_dir):
             return jsonify({"error": "School not found"}), 404
 
@@ -63,4 +71,4 @@ def get_student_image():
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5511)
+    app.run(debug=True, host='127.0.0.1', port=port)
