@@ -3,12 +3,13 @@ import json
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import BadRequest
 import configparser
+from log_handler import log_message
 
 config_path = os.path.join('config.ini')
 config = configparser.ConfigParser()
 config.read(config_path)
 base_path = config['Server']['schools_path']
-port = config['Server']['screen_result_server_port']
+port = int(config['Server']['screen_result_server_port'])
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ def validate_parameters(data):
     """Validate required parameters in request"""
     required = ['school', 'class', 'student_id', 'windows']
     if not all(key in data for key in required):
+        log_message("SCREEN RESULT SERVER | Missing required parameters")
         raise BadRequest('Missing required parameters')
 
 def get_student_path(school, class_name, student_id):
@@ -47,8 +49,10 @@ def save_data():
         return jsonify({'status': 'success'}), 200
     
     except BadRequest as e:
+        log_message(f"SCREEN RESULT SERVER | {str(e)}")
         return jsonify({'error': str(e)}), 400
     except Exception as e:
+        log_message(f"SCREEN RESULT SERVER | {str(e)}")
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 @app.route('/get', methods=['GET'])
@@ -60,11 +64,13 @@ def get_data():
         student_id = request.args.get('student_id')
         
         if not all([school, class_name, student_id]):
+            log_message(f"SCREEN RESULT SERVER | Missing parameters")
             raise BadRequest('Missing parameters')
             
         file_path = get_student_path(school, class_name, student_id)
         
         if not os.path.exists(file_path):
+            log_message(f"SCREEN RESULT SERVER | Data not found")
             return jsonify({'error': 'Data not found'}), 404
             
         with open(file_path, 'r') as f:
@@ -73,9 +79,13 @@ def get_data():
         return jsonify(data), 200
     
     except BadRequest as e:
+        log_message(f"SCREEN RESULT SERVER | {str(e)}")
         return jsonify({'error': str(e)}), 400
     except Exception as e:
+        log_message(f"SCREEN RESULT SERVER | {str(e)}")
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 if __name__ == '__main__':
+    log_message(f"SCREEN RESULT SERVER | Server started on port {port} ")
+
     app.run(host='0.0.0.0', port=port, threaded=True)

@@ -1,13 +1,14 @@
 from flask import Flask, request, jsonify
 import os 
 import configparser
+from log_handler import log_message
 
-config_path = os.path.join(os.path.dirname(__file__), '../config.ini')
+config_path = os.path.join('config.ini')
 config = configparser.ConfigParser()
 config.read(config_path)
 
 base_path = config['Server']['schools_path']
-port = config['Server']['file_indexing_port']
+port = int(config['Server']['file_indexing_port'])
 
 app = Flask(__name__)
 
@@ -23,6 +24,7 @@ def get_students():
     student_list_file = os.path.join(class_path, f"students{class_code}{school_name}.txt")
 
     if not os.path.exists(student_list_file):
+        log_message('FILES INDEXING | Class or school not found')
         return jsonify({"error": "Class or school not found"}), 404
 
     with open(student_list_file, 'r', encoding='utf-8') as file:
@@ -42,9 +44,11 @@ def get_last_message():
     student_file = os.path.join(base_path, school_name, class_code, f"{student_name}.txt")
     print(class_path)
     if not os.path.exists(class_path):
+        log_message('FILES INDEXING | class not found')
         return jsonify({"error": "class not found"}), 404
 
     if not os.path.exists(student_file):
+        log_message('FILES INDEXING | Student not found')
         return jsonify({"error": "Student not found"}), 404
 
     with open(student_file, 'r', encoding='utf-8') as file:
