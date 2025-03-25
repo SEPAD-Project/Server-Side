@@ -35,10 +35,10 @@ def validate_application_header():
         log_message(f"TEXT SERVER | Invalid header detected: {app_header}")
         raise BadRequest('Unauthorized application')
 
-def validate_parameters(data):
+def validate_parameters(request):
     """Validate required parameters in request"""
     required = ['username', 'password', 'school_name', 'class_code', 'text']
-    if not all(key in data for key in required):
+    if not all(key in request.form for key in required):
         log_message("TEXT SERVER | Missing required parameters")
         raise BadRequest('Missing required parameters')
 
@@ -67,8 +67,8 @@ def get_file_path(school, class_code, username):
     """Generate file path based on parameters"""
     target_path = os.path.join(
         base_path,
-        school.replace(' ', '_'),
-        class_code.replace(' ', '_')
+        school,
+        class_code
     )
     
     if not os.path.exists(target_path):
@@ -86,27 +86,34 @@ def upload_text():
     """API endpoint to save student text"""
     try:
         validate_application_header()
-        
-        if not request.is_json:
-            log_message("TEXT SERVER | Request must be JSON")
-            raise BadRequest('Request must be JSON')
+
             
-        data = request.get_json()
-        validate_parameters(data)
-        
+        # Data validation
+        required_fields = ['username', 'password', 'school_name', 'class_code', 'text']
+        if not all(field in request.form for field in required_fields):
+            log_message("Missing required fields")
+            return jsonify({"error": "Missing required fields"}), 400
+
+        username = request.form['username']
+        password = request.form['password']
+        school_name = request.form['school_name']
+        class_code = request.form['class_code']
+        text = request.form['text']
+
+
         # Authenticate user
-        auth_status, auth_message = authenticate_user(data['username'], data['password'])
+        auth_status, auth_message = authenticate_user(username, password)
         if not auth_status:
             status_code = 404 if auth_message == 'User not found' else 401
             return jsonify({'error': auth_message}), status_code
         
         # Get file path and save text
-        file_path = get_file_path(data['school_name'], data['class_code'], data['username'])
+        file_path = get_file_path(school_name, class_code, username)
         
         with open(file_path, 'a', encoding='utf-8') as file:
-            file.write(data['text'] + '\n')
+            file.write(text + '\n')
             
-        log_message(f"TEXT SERVER | Text saved successfully for user: {data['username']}")
+        log_message(f"TEXT SERVER | Text saved successfully for user: {username}")
         return jsonify({'message': 'Text saved successfully'}), 200
     
     except BadRequest as e:
