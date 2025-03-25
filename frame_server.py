@@ -39,7 +39,7 @@ def get_student_image():
             return jsonify({"error": "Missing required fields (school_code, class_name, national_code)"}), 400
 
         # Build the school directory path
-        school_dir = f"{base_path}{school_code}"
+        school_dir = f"{base_path}/{school_code}"
         if not os.path.exists(school_dir):
             log_message("FRAME SERVER | School not found.")
             return jsonify({"error": "School not found"}), 404
