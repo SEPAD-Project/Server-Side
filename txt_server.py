@@ -1,58 +1,51 @@
-from flask import Flask, request, jsonify
 import os
+from flask import Flask, request, jsonify
+from werkzeug.exceptions import BadRequest
 import mysql.connector
 from mysql.connector import Error
-from gevent.pywsgi import WSGIServer
-import logging
 import configparser
 from log_handler import log_message
 
+# Configuration setup
 config_path = os.path.join('config.ini')
 config = configparser.ConfigParser()
 config.read(config_path)
 
 app = Flask(__name__)
 
-# Configuration 
+# Server configuration
 port = int(config['Server']['txt_server_port'])
-BASE_PATH = config['Server']['schools_path']
-ALLOWED_APPLICATION = "SchoolApp"
-REQUIRED_HEADER = "X-Application"
-db_ip_address = config['Database']['Host']
-db_name = config['Database']['Database']
-db_port = int(config['Database']['DB_port'])
-db_user = config['Database']['User']
-db_password = config['Database']['Password']
+base_path = config['Server']['schools_path']
+allowed_application = "SchoolApp"
+required_header = "X-Application"
 
-# Database configuration (Use environment variables in production)
-DB_CONFIG = {
-    'host': db_ip_address,
-    'database': db_name,
-    'port': db_port,
-    'user': db_user,
-    'password': db_password
+# Database configuration
+db_config = {
+    'host': config['Database']['Host'],
+    'database': config['Database']['Database'],
+    'port': int(config['Database']['DB_port']),
+    'user': config['Database']['User'],
+    'password': config['Database']['Password']
 }
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 def validate_application_header():
     """Validate the request contains required application header"""
-    app_header = request.headers.get(REQUIRED_HEADER)
-    if app_header != ALLOWED_APPLICATION:
-        logger.warning(f"Invalid header detected: {app_header}")
-        log_message(f"Invalid header detected: {app_header}")
-        return False
-    return True
+    app_header = request.headers.get(required_header)
+    if app_header != allowed_application:
+        log_message(f"TEXT SERVER | Invalid header detected: {app_header}")
+        raise BadRequest('Unauthorized application')
 
-def get_user_password(username: str) -> tuple:
-    """Retrieve user password and existence status from database"""
+def validate_parameters(data):
+    """Validate required parameters in request"""
+    required = ['username', 'password', 'school_name', 'class_code', 'text']
+    if not all(key in data for key in required):
+        log_message("TEXT SERVER | Missing required parameters")
+        raise BadRequest('Missing required parameters')
+
+def authenticate_user(username, password):
+    """Authenticate user against database"""
     try:
-        with mysql.connector.connect(**DB_CONFIG) as connection:
+        with mysql.connector.connect(**db_config) as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT student_password FROM students WHERE student_national_code = %s",
@@ -60,94 +53,77 @@ def get_user_password(username: str) -> tuple:
                 )
                 result = cursor.fetchone()
                 if not result:
-                    return (False, "User not found")
-                return (True, result[0])
+                    log_message(f"TEXT SERVER | User not found: {username}")
+                    return False, 'User not found'
+                if result[0] != password:
+                    log_message(f"TEXT SERVER | Invalid password for user: {username}")
+                    return False, 'Authentication failed'
+                return True, None
     except Error as e:
-        logger.error(f"Database error: {str(e)}")
-        log_message(f"Database connection error {str(e)}")
-        return (False, f"Database connection error {str(e)}")
+        log_message(f"TEXT SERVER | Database error: {str(e)}")
+        return False, f'Database error: {str(e)}'
 
-def validate_directory_path(school: str, class_code: str) -> tuple:
-    """Validate the target directory exists"""
-    target_path = os.path.join(BASE_PATH, school, class_code)
+def get_file_path(school, class_code, username):
+    """Generate file path based on parameters"""
+    target_path = os.path.join(
+        base_path,
+        school.replace(' ', '_'),
+        class_code.replace(' ', '_')
+    )
+    
     if not os.path.exists(target_path):
-        logger.error(f"Directory not found: {target_path}")
-        log_message(f"Directory not found: {target_path}")
-        return (False, "Directory does not exist")
+        log_message(f"TEXT SERVER | Directory not found: {target_path}")
+        raise FileNotFoundError('Directory does not exist')
+    
     if not os.access(target_path, os.W_OK):
-        logger.error(f"Directory not writable: {target_path}")
-        log_message("Directory not writable")
-        return (False, "Directory not writable")
-    return (True, target_path)
+        log_message(f"TEXT SERVER | Directory not writable: {target_path}")
+        raise PermissionError('Directory not writable')
+    
+    return os.path.join(target_path, f"{username}.txt")
 
 @app.route('/upload_text', methods=['POST'])
 def upload_text():
+    """API endpoint to save student text"""
     try:
-        # Header validation
-        if not validate_application_header():
-            log_message("Unauthorized application")
-            return jsonify({"error": "Unauthorized application"}), 403
-
-        # Data validation
-        required_fields = ['username', 'password', 'school_name', 'class_code', 'text']
-        if not all(field in request.form for field in required_fields):
-            logger.error("Missing required fields")
-            log_message("Missing required fields")
-            return jsonify({"error": "Missing required fields"}), 400
-
-        username = request.form['username']
-        password = request.form['password']
-        school_name = request.form['school_name']
-        class_code = request.form['class_code']
-        text = request.form['text']
-
-        logger.info(f"Request received from user: {username}")
-        log_message(f"Request received from user: {username}")
-
-        # User existence check
-        user_status, db_password = get_user_password(username)
-        if not user_status:
-            status_code = 404 if db_password == "User not found" else 500
-            return jsonify({"error": db_password}), status_code
-
-        # Password validation
-        if db_password != password:
-            logger.warning(f"Invalid password for user: {username}")
-            log_message(f"Invalid password for user: {username}")
-            return jsonify({"error": "Authentication failed"}), 401
-
-        # Directory validation
-        dir_status, full_path = validate_directory_path(school_name, class_code)
-        if not dir_status:
-            return jsonify({"error": full_path}), 500
-
-        # Save text to file
-        try:
-            file_path = os.path.join(full_path, f"{username}.txt")
-            with open(file_path, 'a', encoding='utf-8') as file:
-                file.write(text + '\n')
-            logger.info(f"Text saved successfully for user: {username}")
-            log_message('Text saved successfully')
-            return jsonify({"message": "Text saved successfully"}), 200
-        except IOError as e:
-            logger.error(f"File write error: {str(e)}")
-            log_message("File storage failed")
-            return jsonify({"error": "File storage failed"}), 500
-
+        validate_application_header()
+        
+        if not request.is_json:
+            log_message("TEXT SERVER | Request must be JSON")
+            raise BadRequest('Request must be JSON')
+            
+        data = request.get_json()
+        validate_parameters(data)
+        
+        # Authenticate user
+        auth_status, auth_message = authenticate_user(data['username'], data['password'])
+        if not auth_status:
+            status_code = 404 if auth_message == 'User not found' else 401
+            return jsonify({'error': auth_message}), status_code
+        
+        # Get file path and save text
+        file_path = get_file_path(data['school_name'], data['class_code'], data['username'])
+        
+        with open(file_path, 'a', encoding='utf-8') as file:
+            file.write(data['text'] + '\n')
+            
+        log_message(f"TEXT SERVER | Text saved successfully for user: {data['username']}")
+        return jsonify({'message': 'Text saved successfully'}), 200
+    
+    except BadRequest as e:
+        return jsonify({'error': str(e)}), 400
+    except FileNotFoundError as e:
+        return jsonify({'error': str(e)}), 404
+    except PermissionError as e:
+        return jsonify({'error': str(e)}), 403
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        log_message('Internal server error')
-        return jsonify({"error": "Internal server error"}), 500
+        log_message(f"TEXT SERVER | Unexpected error: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     # Validate base path exists
-    if not os.path.exists(BASE_PATH):
-        logger.error(f"Base path not found: {BASE_PATH}")
-        log_message(f"Base path not found: {BASE_PATH}")
+    if not os.path.exists(base_path):
+        log_message(f"TEXT SERVER | Base path not found: {base_path}")
         exit(1)
 
-    # Start production server
-    http_server = WSGIServer(('0.0.0.0', port), app)
-    logger.info(f"Starting server on port {port}")
-    log_message(f"Starting server on port {port}")
-    http_server.serve_forever()
+    log_message(f"TEXT SERVER | Server started on port {port}")
+    app.run(host='0.0.0.0', port=port, threaded=True)
