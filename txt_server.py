@@ -1,8 +1,8 @@
 import os
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import BadRequest
-import mysql.connector
-from mysql.connector import Error
+from pymysql import connect
+from pymysql import Error
 import configparser
 from log_handler import log_message
 
@@ -39,7 +39,7 @@ def validate_application_header():
 def authenticate_user(username, password):
     """Authenticate user against database"""
     try:
-        with mysql.connector.connect(**db_config) as connection:
+        with connect(**db_config) as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT student_password FROM students WHERE student_national_code = %s",
