@@ -35,12 +35,6 @@ def validate_application_header():
         log_message(f"TEXT SERVER | Invalid header detected: {app_header}")
         raise BadRequest('Unauthorized application')
 
-def validate_parameters(request):
-    """Validate required parameters in request"""
-    required = ['username', 'password', 'school_name', 'class_code', 'text']
-    if not all(key in request.form for key in required):
-        log_message("TEXT SERVER | Missing required parameters")
-        raise BadRequest('Missing required parameters')
 
 def authenticate_user(username, password):
     """Authenticate user against database"""
