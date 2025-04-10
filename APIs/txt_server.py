@@ -4,10 +4,16 @@ from werkzeug.exceptions import BadRequest
 from pymysql import connect
 from pymysql import Error
 import configparser
-from log_handler import log_message
+import time 
+
+def log_message(message):
+    BASE_PATH = "C://sap-project//log.txt"
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    with open(BASE_PATH, 'a') as file:
+        file.write(f"[{formatted_time}] {message}\n")
 
 # Configuration setup
-config_path = os.path.join('config.ini')
+config_path = os.path.join('../config.ini')
 config = configparser.ConfigParser()
 config.read(config_path)
 

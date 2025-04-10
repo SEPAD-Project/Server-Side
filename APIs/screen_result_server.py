@@ -3,9 +3,15 @@ import json
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import BadRequest
 import configparser
-from log_handler import log_message
+import time 
 
-config_path = os.path.join('config.ini')
+def log_message(message):
+    BASE_PATH = "C://sap-project//log.txt"
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    with open(BASE_PATH, 'a') as file:
+        file.write(f"[{formatted_time}] {message}\n")
+
+config_path = os.path.join('../config.ini')
 config = configparser.ConfigParser()
 config.read(config_path)
 base_path = config['Server']['schools_path']

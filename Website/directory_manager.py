@@ -1,7 +1,13 @@
 import os
 import json
 import shutil
-from log_handler import log_message
+import time 
+
+def log_message(message):
+    BASE_PATH = "C://sap-project//log.txt"
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    with open(BASE_PATH, 'a') as file:
+        file.write(f"[{formatted_time}] {message}\n")
 
 # Define the base path where all schools will be created
 BASE_PATH = r"C:\sap-project\schools"
