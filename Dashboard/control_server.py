@@ -17,16 +17,30 @@ class FlaskAppManager:
         pass
 
     def stop(self):
-        pass
+        if not self.is_running():
+            print(f"{self.file_path} is not running")
+            return False
+        
+        try:
+            self.process.kill()
+            self.process.communicate()
+            print(f"API stopped: {self.file_path}")
+            return True
+        except Exception as e:
+            print(f"Stop error: {str(e)}")
+            return False
 
     def restart(self):
-        pass
+        self.stop()
+        return self.start()
 
     def is_running(self):
-        pass
+        return self.process and self.process.poll() is None
 
     def status(self):
-        pass
+        if self.is_running():
+            return f"Running (PID: {self.process.pid})"
+        return "Stopped"
 
 def main():
     apps_config = [
