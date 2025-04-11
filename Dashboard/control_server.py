@@ -30,6 +30,10 @@ class FlaskAppManager:
 
 def main():
     apps_config = [
+        {"file": "api1.py"},
+        {"file": "api2.py"},
+        {"file": "api3.py"},
+        {"file": "api4.py"}
     ]
 
     apps = [
@@ -43,7 +47,38 @@ def main():
 
     while True:
         try:
-            pass
+            cmd = input("> ").lower().split()
+            if not cmd:
+                continue
+
+            if cmd[0] == "exit":
+                for app in apps:
+                    app.stop()
+                break
+
+            elif cmd[0] == "status":
+                for i, app in enumerate(apps, 1):
+                    print(f"[API {i}] {app.file_path}")
+                    print(f"  Status: {app.status()}")
+
+            elif cmd[0] in ("start", "stop", "restart"):
+                if len(cmd) < 2:
+                    print("Missing API number!")
+                    continue
+
+                try:
+                    index = int(cmd[1]) - 1
+                    if index < 0 or index >= len(apps):
+                        print("Invalid API number! Use 1-4")
+                        continue
+
+                    operation = getattr(apps[index], cmd[0])
+                    operation()
+                except ValueError:
+                    print("Invalid number format!")
+
+            else:
+                print("Invalid command!")
 
         except KeyboardInterrupt:
             print("\nExiting...")
