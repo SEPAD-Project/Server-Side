@@ -10,7 +10,7 @@ def log_message(message):
         file.write(f"[{formatted_time}] {message}\n")
 
 # Define the base path where all schools will be created
-BASE_PATH = r"C:\sap-project\schools"
+BASE_PATH = r"C:\sap-project\server\schools"
 
 def out(x):
     """Prints the message and logs it using log_handler module."""
