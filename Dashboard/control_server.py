@@ -11,10 +11,25 @@ class FlaskAppManager:
         self._check_file_exists()
 
     def _check_file_exists(self):
-        pass
+        if not os.path.isfile(self.file_path):
+            raise FileNotFoundError(f"API file not found: {self.file_path}")
 
     def start(self):
-        pass
+        if self.is_running():
+            print(f"{self.file_path} is already running")
+            return False
+        
+        try:
+            self.process = subprocess.Popen(
+                [sys.executable, self.file_path],
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
+            )
+            time.sleep(2)  # زمان برای راه‌اندازی سرور
+            print(f"API started: {self.file_path}")
+            return True
+        except Exception as e:
+            print(f"Start error: {str(e)}")
+            return False
 
     def stop(self):
         if not self.is_running():
