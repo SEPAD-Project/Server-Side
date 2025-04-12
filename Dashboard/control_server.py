@@ -3,12 +3,25 @@ import subprocess
 import os
 import sys
 import time
+from configparser import ConfigParser
+from pathlib import Path
+
+config_path = os.path.join('../config.ini')
+config = ConfigParser()
+config.read(config_path)
+
+port = int(config['ControlServer']['control_server_port'])
+api1 = config['ControlServer']['api1']
+api2 = config['ControlServer']['api2']
+api3 = config['ControlServer']['api3']
+api4 = config['ControlServer']['api4']
 
 app = Flask(__name__)
 
 class FlaskAppManager:
     def __init__(self, file_path):
-        self.file_path = os.path.abspath(file_path)
+        self.file_path = file_path
+        self.file_path = os.path.abspath("../"+str(file_path))
         self.process = None
         self._check_file_exists()
 
@@ -55,27 +68,27 @@ class FlaskAppManager:
 
 # Initialize managers for APIs
 apps = [
-    FlaskAppManager("api1.py"),
-    FlaskAppManager("api2.py"),
-    FlaskAppManager("api3.py"),
-    FlaskAppManager("api4.py")
+    FlaskAppManager(Path(api1)),
+    FlaskAppManager(Path(api2)),
+    FlaskAppManager(Path(api3)),
+    FlaskAppManager(Path(api4))
 ]
 
-@app.route('/start/<int:api_number>', methods=['POST'])
+@app.route('/start/<int:api_number>', methods=['POST', 'GET'])
 def start_api(api_number):
     if 1 <= api_number <= 4:
         result = apps[api_number-1].start()
         return jsonify(result)
     return jsonify({'status': 'error', 'message': 'Invalid API number'})
 
-@app.route('/stop/<int:api_number>', methods=['POST'])
+@app.route('/stop/<int:api_number>', methods=['POST', 'GET'])
 def stop_api(api_number):
     if 1 <= api_number <= 4:
         result = apps[api_number-1].stop()
         return jsonify(result)
     return jsonify({'status': 'error', 'message': 'Invalid API number'})
 
-@app.route('/restart/<int:api_number>', methods=['POST'])
+@app.route('/restart/<int:api_number>', methods=['POST', 'GET'])
 def restart_api(api_number):
     if 1 <= api_number <= 4:
         result = apps[api_number-1].restart()
