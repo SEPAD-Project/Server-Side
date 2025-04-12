@@ -31,7 +31,7 @@ class FlaskAppManager:
         if not os.path.isfile(self.file_path):
             raise FileNotFoundError(f"API file not found: {self.file_path}")
 
-    def start(self):
+    def start(self, message='Started successfully'):
         if self.is_running():
             return {'status': 'error', 'message': 'Already running'}
         
@@ -41,7 +41,7 @@ class FlaskAppManager:
                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
             )
             time.sleep(2)
-            return {'status': 'success', 'message': 'Started successfully'}
+            return {'status': 'success', 'message': message}
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
 
@@ -52,7 +52,7 @@ class FlaskAppManager:
         try:
             self.process.kill()
             self.process.communicate()
-            return {'status': 'success', 'message': 'Stopped successfully'}
+            return {'status': 'success', 'message': 'Stopped Successfully'}
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
 
@@ -60,7 +60,7 @@ class FlaskAppManager:
         stop_result = self.stop()
         if stop_result['status'] == 'error':
             return stop_result
-        return self.start()
+        return self.start(message='RESTARTED Successfully')
 
     def is_running(self):
         return self.process and self.process.poll() is None
