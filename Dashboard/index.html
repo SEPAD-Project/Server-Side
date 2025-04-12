@@ -20,7 +20,44 @@
         </div>
 
         <div class="metrics-section">
+            <h2 class="metrics-title">Server Metrics</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">CPU Usage</div>
+                    <div class="metric-value" id="cpu-usage">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Memory Usage</div>
+                    <div class="metric-value" id="memory-usage">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Disk Usage</div>
+                    <div class="metric-value" id="disk-usage">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Network</div>
+                    <div class="metric-value" id="network-usage">0 MB</div>
+                </div>
+            </div>
 
+            <div class="gauge-container">
+                <div class="gauge">
+                    <h3 class="gauge-title">CPU Usage</h3>
+                    <div class="gauge-body">
+                        <div class="gauge-fill" id="cpu-gauge"></div>
+                        <div class="gauge-cover">0%</div>
+                    </div>
+                </div>
+                
+                <div class="gauge">
+                    <h3 class="gauge-title">Memory Usage</h3>
+                    <div class="gauge-body">
+                        <div class="gauge-fill" id="memory-gauge"></div>
+                        <div class="gauge-cover">0%</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
