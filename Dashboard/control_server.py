@@ -5,6 +5,7 @@ import sys
 import time
 from configparser import ConfigParser
 from pathlib import Path
+from flask_cors import CORS
 
 config_path = os.path.join('../config.ini')
 config = ConfigParser()
@@ -17,6 +18,7 @@ api3 = config['ControlServer']['api3']
 api4 = config['ControlServer']['api4']
 
 app = Flask(__name__)
+CORS(app)
 
 class FlaskAppManager:
     def __init__(self, file_path):
