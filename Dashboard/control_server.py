@@ -6,6 +6,7 @@ import time
 from configparser import ConfigParser
 from pathlib import Path
 from flask_cors import CORS
+import psutil
 
 config_path = os.path.join('../config.ini')
 config = ConfigParser()
@@ -107,6 +108,19 @@ def status():
             'pid': manager.process.pid if manager.process else None
         }
     return jsonify(status_report)
+
+@app.route('/metrics')
+def get_metrics():
+    cpu = psutil.cpu_percent()
+    mem = psutil.virtual_memory().percent
+    disk = psutil.disk_usage('/').percent
+    net = psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv
+    return jsonify({
+        'cpu': round(cpu, 1),
+        'memory': round(mem, 1),
+        'disk': round(disk, 1),
+        'network': round(net / 1024 / 1024, 2)
+    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)

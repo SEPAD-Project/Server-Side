@@ -1,3 +1,4 @@
 flask
 pymysql
 opencv-python
+psutil
