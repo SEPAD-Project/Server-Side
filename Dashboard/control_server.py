@@ -75,8 +75,23 @@ def stop_api(api_number):
         return jsonify(result)
     return jsonify({'status': 'error', 'message': 'Invalid API number'})
 
+@app.route('/restart/<int:api_number>', methods=['POST'])
+def restart_api(api_number):
+    if 1 <= api_number <= 4:
+        result = apps[api_number-1].restart()
+        return jsonify(result)
+    return jsonify({'status': 'error', 'message': 'Invalid API number'})
 
-
+@app.route('/status', methods=['GET'])
+def status():
+    status_report = {}
+    for i, manager in enumerate(apps, 1):
+        status_report[f'api{i}'] = {
+            'file': manager.file_path,
+            'status': manager.get_status(),
+            'pid': manager.process.pid if manager.process else None
+        }
+    return jsonify(status_report)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
