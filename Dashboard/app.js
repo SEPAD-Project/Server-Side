@@ -1,3 +1,17 @@
+// Function to show toast notifications
+function showToast(type, message) {
+    const toast = document.createElement('div');
+    toast.className = `${type}-toast`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Remove after 3 seconds with slideOut animation
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-out forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // Function for getting API status
 async function checkApiStatus() {
     try {
@@ -14,7 +28,6 @@ async function checkApiStatus() {
         updateApiStatus('api3', data.api3.status);
         updateApiStatus('api4', data.api4.status);
         
-        // Update button status
         updateButtonStates(data);
 
         setTimeout(checkApiStatus, 1000);
@@ -30,10 +43,8 @@ function updateApiStatus(apiName, status) {
     const element = document.querySelector(`.${apiName}-status`);
     if (!element) return;
     
-    // Update text
     element.textContent = status.toUpperCase();
     
-    // Update class
     if (status === 'running') {
         element.classList.remove('status-stopped');
         element.classList.add('status-running');
@@ -77,40 +88,17 @@ async function sendApiRequest(action, apiNumber) {
         const result = await response.json();
         console.log(`Response for ${action} API ${apiNumber}:`, result.message);
         
-        // Show toast notification based on response
         if (result.status === 'error') {
             showToast('error', result.message);
         } else {
             showToast('success', result.message);
         }
         
-        // Check again after change
         setTimeout(checkApiStatus, 500);
     } catch (error) {
         console.error(`Error in ${action} API ${apiNumber}:`, error);
         showToast('error', `Failed to ${action} API ${apiNumber}`);
     }
-}
-
-// Function to show toast notifications
-function showToast(type, message) {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}-toast`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    // Add animation
-    setTimeout(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-    }, 10);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(-20px)';
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
 }
 
 // Function for adding event listeners to buttons
