@@ -67,3 +67,26 @@ h1 {
     border-bottom: 1px solid #eee;
 }
 
+.api-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.api-status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-running {
+    background-color: rgba(46, 213, 115, 0.2);
+    color: var(--success-color);
+}
+
+.status-stopped {
+    background-color: rgba(255, 71, 87, 0.2);
+    color: var(--danger-color);
+}
+
