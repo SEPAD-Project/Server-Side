@@ -295,3 +295,23 @@ h1 {
     animation: slideIn 0.3s ease-out;
 }
 
+@keyframes slideIn {
+    from { bottom: -50px; opacity: 0; }
+    to { bottom: 20px; opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .api-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+    
+    .gauge-container {
+        grid-template-columns: 1fr;
+        margin-bottom: 200px;
+    }
+}
