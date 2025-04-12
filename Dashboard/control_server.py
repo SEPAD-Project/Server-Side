@@ -61,6 +61,22 @@ apps = [
     FlaskAppManager("api4.py")
 ]
 
+@app.route('/start/<int:api_number>', methods=['POST'])
+def start_api(api_number):
+    if 1 <= api_number <= 4:
+        result = apps[api_number-1].start()
+        return jsonify(result)
+    return jsonify({'status': 'error', 'message': 'Invalid API number'})
+
+@app.route('/stop/<int:api_number>', methods=['POST'])
+def stop_api(api_number):
+    if 1 <= api_number <= 4:
+        result = apps[api_number-1].stop()
+        return jsonify(result)
+    return jsonify({'status': 'error', 'message': 'Invalid API number'})
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
