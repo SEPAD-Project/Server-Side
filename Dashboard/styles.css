@@ -215,3 +215,26 @@ h1 {
     gap: 30px;
 }
 
+.gauge {
+    height: 200px;
+    position: relative;
+}
+
+.gauge-title {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.gauge-body {
+    width: 100%;
+    height: 0;
+    padding-bottom: 50%;
+    position: relative;
+    border-top-left-radius: 100% 200%;
+    border-top-right-radius: 100% 200%;
+    overflow: hidden;
+    background-color: #f5f5f5;
+}
+
