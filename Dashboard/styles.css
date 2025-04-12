@@ -6,6 +6,8 @@
     --success-color: #2ed573;
     --dark-color: #2f3542;
     --light-color: #ffffff;
+    --disabled-color: #cccccc;
+    --disabled-text: #666666;
 }
 
 * {
@@ -56,7 +58,6 @@ h1 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
-
 
 .api-header {
     display: flex;
@@ -145,6 +146,8 @@ h1 {
     display: flex;
     align-items: center;
     gap: 5px;
+    min-width: 80px;
+    justify-content: center;
 }
 
 .btn-start {
@@ -162,9 +165,28 @@ h1 {
     color: white;
 }
 
-.btn:hover {
+/* Disabled button styles */
+.btn:disabled {
+    /* background-color: var(--disabled-color) !important;
+    color: var(--disabled-text) !important; */
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 0.4 !important;
+    border: 1px solid #ddd !important;
+}
+
+/* Remove hover effects for disabled buttons */
+.btn:disabled:hover {
+    opacity: 0.4 !important;
+    transform: none !important;
+}
+
+/* Active button hover effects */
+.btn:not(:disabled):hover {
     opacity: 0.9;
     transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .metrics-section {
@@ -190,7 +212,6 @@ h1 {
 
 .metric-card {
     background-color: var(--secondary-color);
-
     border-radius: 8px;
     padding: 15px;
     text-align: center;
@@ -328,7 +349,6 @@ h1 {
     
     .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
-
     }
     
     .gauge-container {
