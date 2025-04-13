@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import subprocess
 import os
 import sys
@@ -121,6 +121,10 @@ def get_metrics():
         'disk': round(disk, 1),
         'network': round(net / 1024 / 1024, 2)
     })
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
