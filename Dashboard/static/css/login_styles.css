@@ -172,7 +172,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* .input-field input:focus ~ .input-label,
+.input-field input:focus ~ .input-label,
 .input-field input:valid ~ .input-label {
     top: 0;
     left: 30px;
@@ -182,7 +182,7 @@ body {
     background-clip: text;
     color: transparent;
     padding: 0 5px;
-} */
+}
 
 .input-highlight {
     position: absolute;
