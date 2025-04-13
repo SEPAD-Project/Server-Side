@@ -57,6 +57,10 @@ h1 {
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+
 }
 
 .api-header {
@@ -133,10 +137,15 @@ h1 {
 
 .action-buttons {
     display: flex;
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    gap: 5px;
+    margin-top: auto;
 }
-
 .btn {
+    flex: 1;
     padding: 8px 15px;
     border: none;
     border-radius: 4px;
@@ -147,7 +156,10 @@ h1 {
     align-items: center;
     gap: 5px;
     min-width: 80px;
-    justify-content: center;
+    justify-content: center;    
+    min-width: calc(33.33% - 5px);
+    margin-bottom: 5px;
+    height: 40px;
 }
 
 .btn-start {
@@ -356,3 +368,31 @@ h1 {
         margin-bottom: 200px;
     }
 }
+
+@media (max-width: 450px) {
+    .action-buttons {
+        flex-direction: column; 
+    }
+    
+    .btn {
+        width: 100%; 
+        margin-bottom: 5px; 
+    }
+    
+
+    .api-card {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .action-buttons {
+        margin-top: auto;
+    }
+    
+
+    .btn {
+        height: 40px; 
+    }
+}
+
