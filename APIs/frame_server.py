@@ -1,14 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import cv2
 import os
 import configparser
 import time 
-
-def log_message(message):
-    BASE_PATH = "C://sap-project//log.txt"
-    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
-    with open(BASE_PATH, 'a') as file:
-        file.write(f"[{formatted_time}] {message}\n")
+from datetime import datetime
+from pathlib import Path
 
 config_path = os.path.join('../config.ini')
 config = configparser.ConfigParser()
@@ -16,8 +12,48 @@ config.read(config_path)
 
 port = int(config['Server']['frame_server_port'])
 base_path = config['Server']['schools_path']
+request_log_path = Path("../"+str(config['ControlServer']['api2_log']))
+
+def log_message(message):
+    BASE_PATH = "C://sap-project//log.txt"
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
+    with open(BASE_PATH, 'a') as file:
+        file.write(f"[{formatted_time}] {message}\n")
+
+def log_request(response):
+    timestamp = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
+    client_ip = request.remote_addr
+    method = request.method
+    path = request.path
+    protocol = request.environ.get('SERVER_PROTOCOL', 'HTTP/1.1')
+    status_code = response.status_code
+    log_line = f'[{timestamp}] - {client_ip} - "{method} {path} {protocol}" {status_code} -\n'
+    with open(request_log_path, 'a') as log_file:
+        log_file.write(log_line)
+        log_file.close()
+    
+    return response
 
 app = Flask(__name__)
+
+@app.before_request
+def log_before_request():
+    pass
+
+@app.after_request
+def log_after_request(response):
+    log_request(response)
+    return response
+
+@app.errorhandler(404)
+def handle_404(e):
+    response = make_response(jsonify({"error": "Not found"}), 404)
+    return response
+
+@app.errorhandler(500)
+def handle_500(e):
+    response = make_response(jsonify({"error": "Internal server error"}), 500)
+    return response
 
 # Handler for wrong methods (405 Method Not Allowed)
 @app.errorhandler(405)
