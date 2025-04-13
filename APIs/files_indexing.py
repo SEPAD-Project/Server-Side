@@ -13,6 +13,7 @@ base_path = config['Server']['schools_path']
 port = int(config['Server']['file_indexing_port'])
 request_log_path = Path("../"+str(config['ControlServer']['api1_log']))
 
+
 def log_message(message):
     BASE_PATH = "C://sap-project//log.txt"
     formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -100,4 +101,8 @@ def get_last_message():
     return jsonify({"student": student_name, "message": last_message})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=port)
+    debug_stat = False
+    with open(request_log_path, 'a') as log_file:
+        log_file.write(f'* Serving Flask app "{str(__file__).split('\\')[-1]}"\n* Debug mode: {debug_stat}\n* Running on all addresses (0.0.0.0)\n* Running on http://127.0.0.1:{port}')
+        log_file.close()
+    app.run(host="0.0.0.0", port=port, debug=debug_stat)

@@ -172,4 +172,8 @@ if __name__ == '__main__':
         exit(1)
 
     log_message(f"TEXT SERVER | Server started on port {port}")
-    app.run(host='0.0.0.0', port=port, threaded=True)
+    debug_stat = False
+    with open(request_log_path, 'a') as log_file:
+        log_file.write(f'* Serving Flask app "{str(__file__).split('\\')[-1]}"\n* Debug mode: {debug_stat}\n* Running on all addresses (0.0.0.0)\n* Running on http://127.0.0.1:{port}')
+        log_file.close()
+    app.run(host="0.0.0.0", port=port, debug=debug_stat)
