@@ -15,7 +15,7 @@ function showToast(type, message) {
 // Function for getting API status
 async function checkApiStatus() {
     try {
-        const response = await fetch('http://localhost:8000/status');
+        const response = await fetch('http://192.168.1.101:8000/status');
         const data = await response.json();
         
         console.log(`api1:${data.api1.status}`);
@@ -77,7 +77,7 @@ function updateButtonStates(data) {
 // Function for sending requests to API
 async function sendApiRequest(action, apiNumber) {
     try {
-        const url = `http://localhost:8000/${action}/${apiNumber}`;
+        const url = `http://192.168.1.101:8000/${action}/${apiNumber}`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -103,7 +103,7 @@ async function sendApiRequest(action, apiNumber) {
 
 // Function to update server metrics
 function updateMetrics() {
-    fetch('http://localhost:8000/metrics')
+    fetch('http://192.168.1.101:8000/metrics')
         .then(response => response.json())
         .then(metrics => {
             // Update numeric values
