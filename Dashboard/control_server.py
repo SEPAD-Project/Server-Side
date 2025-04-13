@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import subprocess
 import os
 import sys
@@ -17,6 +17,8 @@ api1 = config['ControlServer']['api1']
 api2 = config['ControlServer']['api2']
 api3 = config['ControlServer']['api3']
 api4 = config['ControlServer']['api4']
+
+LOG_DIR = os.path.join('../', 'apis', 'api_logs')
 
 app = Flask(__name__)
 CORS(app)
@@ -121,6 +123,52 @@ def get_metrics():
         'disk': round(disk, 1),
         'network': round(net / 1024 / 1024, 2)
     })
+
+@app.route('/get_api_logs', methods=['GET'])
+def get_api_logs():
+    # get api number
+    api_number = request.args.get('api_number')
+    
+    if not api_number:
+        return jsonify({
+            'success': False,
+            'api_number': None,
+            'message': 'API number is required'
+        }), 400
+    
+    # log file name
+    log_file = os.path.join(LOG_DIR, f'api{api_number}_log.txt')
+    
+    # check file exists
+    if not os.path.exists(log_file):
+        return jsonify({
+            'success': False,
+            'api_number': api_number,
+            'message': f'Log file for API {api_number} not found'
+        }), 404
+    
+    try:
+        # read fils
+        with open(log_file, 'r') as f:
+            content = f.read()
+        
+        # clean file content
+        with open(log_file, 'w') as f:
+            f.write('')
+        
+        # return success message
+        return jsonify({
+            'success': True,
+            'api_number': api_number,
+            'message': content
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'api_number': api_number,
+            'message': f'Error processing log file: {str(e)}'
+        }), 500
 
 @app.route('/')
 def home():
