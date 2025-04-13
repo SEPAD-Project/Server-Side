@@ -1,4 +1,7 @@
 flask
+flask_cors
 pymysql
 opencv-python
 psutil
+mysql-connector-python
+pyftpdlib
