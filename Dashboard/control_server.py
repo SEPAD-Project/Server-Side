@@ -7,10 +7,8 @@ from configparser import ConfigParser
 from pathlib import Path
 from flask_cors import CORS
 import psutil
-import mysql.connector
-from mysql.connector import Error
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from pymysql import connect
+from pymysql import Error
 
 config_path = os.path.join('../config.ini')
 config = ConfigParser()
@@ -25,20 +23,12 @@ api4 = config['ControlServer']['api4']
 LOG_DIR = os.path.join('../', 'apis', 'api_logs')
 
 db_config = {
-    'host': '185.4.28.110',
-    'user': 'root',
-    'port' : 5000,
-    'password': 'sapprogram2583',
-    'database': 'sap'
+    'host': config['Database']['Host'],
+    'database': config['Database']['Database'],
+    'port': int(config['Database']['DB_port']),
+    'user': config['Database']['User'],
+    'password': config['Database']['Password']
 }
-
-def create_connection():
-    try:
-        connection = mysql.connector.connect(**db_config)
-        return connection
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
-        return None
 
 app = Flask(__name__)
 app.secret_key = 'sapprog_seckey'
@@ -205,33 +195,22 @@ def login():
             username = data.get('username', '').strip()
             password = data.get('password', '')
         else:
-
             username = request.form.get('username', '').strip()
             password = request.form.get('password', '')
-        
         
         if not username or not password:
             return jsonify({'success': False, 'message': 'Username and password are required'}), 400
         
         try:
-            connection = create_connection()
-            if connection:
-                cursor = connection.cursor(dictionary=True)
-                
-                # Secure query with parameterized inputs
-                cursor.execute(
-                    "SELECT username, password FROM admins WHERE username = %s", 
-                    (username,)
-                )
-                user = cursor.fetchone()
+            with connect(**db_config) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT username, password FROM admins WHERE username = %s", (username,))
+                    result = cursor.fetchone()
+                    print(result)
                 
                 # Verify user exists and password is correct
-                if user['password'] == password:
-                    session['username'] = user['username']
-
-
-                    cursor.close()
-                    connection.close()
+                if result[1] == password:
+                    session['username'] = result[1]
 
                     return jsonify({
                         'success': True,
