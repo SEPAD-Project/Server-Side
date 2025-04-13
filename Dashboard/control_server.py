@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash
 import subprocess
 import os
 import sys
@@ -7,6 +7,10 @@ from configparser import ConfigParser
 from pathlib import Path
 from flask_cors import CORS
 import psutil
+import mysql.connector
+from mysql.connector import Error
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 config_path = os.path.join('../config.ini')
 config = ConfigParser()
@@ -20,7 +24,24 @@ api4 = config['ControlServer']['api4']
 
 LOG_DIR = os.path.join('../', 'apis', 'api_logs')
 
+db_config = {
+    'host': '185.4.28.110',
+    'user': 'root',
+    'port' : 5000,
+    'password': 'sapprogram2583',
+    'database': 'sap'
+}
+
+def create_connection():
+    try:
+        connection = mysql.connector.connect(**db_config)
+        return connection
+    except Error as e:
+        print(f"Error connecting to MySQL: {e}")
+        return None
+
 app = Flask(__name__)
+app.secret_key = 'sapprog_seckey'
 CORS(app)
 
 class FlaskAppManager:
@@ -172,7 +193,80 @@ def get_api_logs():
 
 @app.route('/')
 def home():
+    if 'username' in session:
+        return redirect(url_for('dashboard'))
+    return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        if request.is_json:
+            data = request.get_json()
+            username = data.get('username', '').strip()
+            password = data.get('password', '')
+        else:
+
+            username = request.form.get('username', '').strip()
+            password = request.form.get('password', '')
+        
+        
+        if not username or not password:
+            return jsonify({'success': False, 'message': 'Username and password are required'}), 400
+        
+        try:
+            connection = create_connection()
+            if connection:
+                cursor = connection.cursor(dictionary=True)
+                
+                # Secure query with parameterized inputs
+                cursor.execute(
+                    "SELECT username, password FROM admins WHERE username = %s", 
+                    (username,)
+                )
+                user = cursor.fetchone()
+                
+                # Verify user exists and password is correct
+                if user['password'] == password:
+                    session['username'] = user['username']
+
+
+                    cursor.close()
+                    connection.close()
+
+                    return jsonify({
+                        'success': True,
+                        'redirect': url_for('dashboard')
+                    })
+                else:
+                    return jsonify({
+                        'success': False,
+                        'message': 'Invalid username or password'
+                    }), 401
+                
+
+        except Error as e:
+            print(f"Database error: {e}")
+            return jsonify({
+                'success': False,
+                'message': 'Database error'
+            }), 500
+    
+    return render_template('login.html')
+
+@app.route('/dashboard')
+def dashboard():
+    if 'username' not in session:
+        flash('Please login to access this page', 'error')
+        return redirect(url_for('login'))
+    
     return render_template('index.html')
+
+@app.route('/logout')
+def logout():
+    # Clear session data
+    session.clear()
+    flash('You have been logged out successfully', 'success')
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
