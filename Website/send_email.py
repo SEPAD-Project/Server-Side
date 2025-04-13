@@ -1,138 +1,40 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
-def generate_html_email(theme='light'):
-    """Generate HTML content with specified theme (light/dark)"""
-    return f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        :root {{
-            --primary-color: { '#3498db' if theme == 'light' else '#2ecc71' };
-            --hover-scale: 1.05;
-        }}
-
-        body {{
-            margin: 0;
-            padding: 20px;
-            font-family: 'Segoe UI', system-ui;
-            background: {'linear-gradient(135deg, #f8f9fa, #e9ecef)' if theme == 'light' 
-                        else 'linear-gradient(135deg, #2c3e50, #34495e)'};
-            min-height: 100vh;
-        }}
-
-        .container {{
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 40px;
-            background: {'#ffffff' if theme == 'light' else '#2c3e50'};
-            border-radius: 16px;
-            box-shadow: 0 8px 30px { 'rgba(0,0,0,0.1)' if theme == 'light' 
-                                   else 'rgba(0,0,0,0.3)' };
-            transition: transform 0.3s ease;
-        }}
-
-        .container:hover {{
-            transform: translateY(-5px);
-        }}
-
-        h1 {{
-            color: {'#2c3e50' if theme == 'light' else '#ecf0f1'};
-            text-align: center;
-            font-size: 2.4em;
-            margin-bottom: 30px;
-        }}
-
-        .content {{
-            line-height: 1.6;
-            color: {'#7f8c8d' if theme == 'light' else '#bdc3c7'};
-            font-size: 16px;
-        }}
-
-        .button-container {{
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-        }}
-
-        .cta-button {{
-            padding: 15px 40px;
-            background: var(--primary-color);
-            color: white !important;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-            border: none;
-            cursor: pointer;
-        }}
-
-        .cta-button:hover {{
-            transform: scale(var(--hover-scale));
-            box-shadow: 0 5px 15px { 'rgba(52, 152, 219, 0.3)' if theme == 'light' 
-                                    else 'rgba(46, 204, 113, 0.3)' };
-        }}
-
-        .features {{
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin: 30px 0;
-        }}
-
-        .feature-card {{
-            padding: 20px;
-            background: {'#f8f9fa' if theme == 'light' else '#34495e'};
-            border-radius: 8px;
-            text-align: center;
-        }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Welcome to Our Platform</h1>
-        
-        <div class="content">
-            <p>Discover amazing features and enhance your experience with our premium services.</p>
-            
-            <div class="features">
-                <div class="feature-card">
-                    <h3>🚀 Fast Performance</h3>
-                    <p>Lightning-fast loading times and smooth operations</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🔒 Secure Storage</h3>
-                    <p>Military-grade encryption for your data</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="button-container">
-            <a href="#" class="cta-button">Get Started Now</a>
-        </div>
-    </div>
-</body>
-</html>
-"""
-
-def send_styled_email(theme, RECEIVER_EMAIL):
+def send_styled_email(receiver, title, attachment_path=None):
     # Email configuration
-    EMAIL_ADDRESS = "abolfazlrashidian94@gmail.com" 
-    EMAIL_PASSWORD = "xaom tzfe lkxx gvgc"   
-
-
+    EMAIL_ADDRESS = "sap.program.2583@gmail.com"
+    EMAIL_PASSWORD = "algj nsge thlg xpsl"
+    
     # Create message
     msg = MIMEMultipart()
     msg['From'] = EMAIL_ADDRESS
-    msg['To'] = RECEIVER_EMAIL
-    msg['Subject'] = f"Styled Email ({theme.capitalize()} Theme)"
-
-    # Generate HTML content
-    html_content = generate_html_email(theme)
-    msg.attach(MIMEText(html_content, 'html'))
+    msg['To'] = receiver
+    msg['Subject'] = title
+    
+    # Attach file if provided
+    if attachment_path:
+        try:
+            # Open the file in binary mode
+            with open(attachment_path, "rb") as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+            
+            # Encode file in ASCII characters
+            encoders.encode_base64(part)
+            
+            # Add header with filename
+            filename = attachment_path.split("/")[-1]  # Get just the filename
+            part.add_header(
+                'Content-Disposition',
+                f'attachment; filename= {filename}'
+            )
+            msg.attach(part)
+        except Exception as e:
+            print(f"Error attaching file: {e}")
+            return
 
     # Send email
     try:
@@ -140,12 +42,12 @@ def send_styled_email(theme, RECEIVER_EMAIL):
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.send_message(msg)
-        print(f"Email sent successfully with {theme} theme!")
+        print(f"Email sent successfully to {receiver}!")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error sending email: {e}")
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     # Usage example
-    receiver = input('enter email : ')
-    receiver =  "crax6ix@gmail.com"
-    send_styled_email('light', receiver)  # Change to 'light' for light theme
+    receiver = "parsasafaie.2568@gmail.com"
+    attachment_file = "test.pdf"  # Path to file
+    send_styled_email(receiver, 'Analytics Report', attachment_file)
