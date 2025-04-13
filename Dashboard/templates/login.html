@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Glass Login</title>
-    <link rel="stylesheet"` href="{{ url_for('static', filename='css/login_styles.css') }}">
-    <script src="{{ url_for('static', filename='js/login_script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -22,27 +21,30 @@
                     <span>ADMIN PANEL</span>
                 </div>
                 <h2 class="login-title">SAP Program</h2>
-                <form class="login-form">
+                <form class="login-form" id="loginForm">
                     <div class="input-field">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="username" autocomplete="off" required>
+                        <input type="text" id="username" name="username" autocomplete="off" required>
                         <label for="username" class="input-label">USER ID</label>
                         <span class="input-highlight"></span>
                     </div>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
-                        <input type="password" id="password" required>
+                        <input type="password" id="password" name="password" required>
                         <label for="password" class="input-label">PASSKEY</label>
                         <span class="input-highlight"></span>
                     </div>
-                    <button type="submit" class="login-btn">
+                    <button type="submit" class="login-btn" id="loginButton">
                         <span>AUTHENTICATE</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
+                    <div class="error-message" id="errorMessage"></div>
                 </form>
             </div>
         </div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="{{ url_for('static', filename='js/login_script.js') }}"></script>
 </body>
 </html>
