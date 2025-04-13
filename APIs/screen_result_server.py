@@ -1,9 +1,18 @@
 import os
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from werkzeug.exceptions import BadRequest
 import configparser
 import time 
+from datetime import datetime
+from pathlib import Path
+
+config_path = os.path.join('../config.ini')
+config = configparser.ConfigParser()
+config.read(config_path)
+base_path = config['Server']['schools_path']
+port = int(config['Server']['screen_result_server_port'])
+request_log_path = Path("../"+str(config['ControlServer']['api3_log']))
 
 def log_message(message):
     BASE_PATH = "C://sap-project//log.txt"
@@ -11,13 +20,40 @@ def log_message(message):
     with open(BASE_PATH, 'a') as file:
         file.write(f"[{formatted_time}] {message}\n")
 
-config_path = os.path.join('../config.ini')
-config = configparser.ConfigParser()
-config.read(config_path)
-base_path = config['Server']['schools_path']
-port = int(config['Server']['screen_result_server_port'])
+def log_request(response):
+    timestamp = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
+    client_ip = request.remote_addr
+    method = request.method
+    path = request.path
+    protocol = request.environ.get('SERVER_PROTOCOL', 'HTTP/1.1')
+    status_code = response.status_code
+    log_line = f'[{timestamp}] - {client_ip} - "{method} {path} {protocol}" {status_code} -\n'
+    with open(request_log_path, 'a') as log_file:
+        log_file.write(log_line)
+        log_file.close()
+    
+    return response
 
 app = Flask(__name__)
+
+@app.before_request
+def log_before_request():
+    pass
+
+@app.after_request
+def log_after_request(response):
+    log_request(response)
+    return response
+
+@app.errorhandler(404)
+def handle_404(e):
+    response = make_response(jsonify({"error": "Not found"}), 404)
+    return response
+
+@app.errorhandler(500)
+def handle_500(e):
+    response = make_response(jsonify({"error": "Internal server error"}), 500)
+    return response
 
 def validate_parameters(data):
     """Validate required parameters in request"""
@@ -94,4 +130,8 @@ def get_data():
 if __name__ == '__main__':
     log_message(f"SCREEN RESULT SERVER | Server started on port {port} ")
 
-    app.run(host='0.0.0.0', port=port, threaded=True)
+    debug_stat = False
+    with open(request_log_path, 'a') as log_file:
+        log_file.write(f'* Serving Flask app "{str(__file__).split('\\')[-1]}"\n* Debug mode: {debug_stat}\n* Running on all addresses (0.0.0.0)\n* Running on http://127.0.0.1:{port}')
+        log_file.close()
+    app.run(host="0.0.0.0", port=port, debug=debug_stat)

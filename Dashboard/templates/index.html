@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask APIs Control Panel</title>
+    <!-- <link rel="stylesheet" href="static/styles.css">
+    <script src="static/app.js"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Flask API Management</h1>
+            <p>Real-time Monitoring & Control</p>
+        </header>
+
+        <div class="api-grid" id="api-container">
+
+            <!-- API Card 1 -->
+            <div class="api-card">
+                <div class="api-header">
+                    <h2>API 1</h2>
+                    <span class="api1-status api-status status-stopped">STOPPED</span>
+                </div>
+                <div class="log-container log1"></div>
+                <div class="action-buttons">
+                    <button class="btn btn-start btn-start1"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn btn-restart btn-restart1" disabled><i class="fas fa-redo"></i> Restart</button>
+                    <button class="btn btn-stop btn-stop1" disabled><i class="fas fa-stop"></i> Stop</button>
+                </div>
+            </div>
+
+            <!-- API Card 2 -->
+            <div class="api-card">
+                <div class="api-header">
+                    <h2>API 2</h2>
+                    <span class="api2-status api-status status-stopped">STOPPED</span>
+                </div>
+                <div class="log-container log2"></div>
+                <div class="action-buttons">
+                    <button class="btn btn-start btn-start2"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn btn-restart btn-restart2" disabled><i class="fas fa-redo"></i> Restart</button>
+                    <button class="btn btn-stop btn-stop2" disabled><i class="fas fa-stop"></i> Stop</button>
+                </div>
+            </div>
+            <!-- API Card 3 -->
+            <div class="api-card">
+                <div class="api-header">
+                    <h2>API 3</h2>
+                    <span class="api3-status api-status status-stopped">STOPPED</span>
+                </div>
+                <div class="log-container log3"></div>
+                <div class="action-buttons">
+                    <button class="btn btn-start btn-start3"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn btn-restart btn-restart3" disabled><i class="fas fa-redo"></i> Restart</button>
+                    <button class="btn btn-stop btn-stop3" disabled><i class="fas fa-stop"></i> Stop</button>
+                </div>
+            </div>
+
+            <!-- API Card 4 -->
+            <div class="api-card">
+                <div class="api-header">
+                    <h2>API 4</h2>
+                    <span class="api4-status api-status status-stopped">STOPPED</span>
+                </div>
+                <div class="log-container log4"></div>
+                <div class="action-buttons">
+                    <button class="btn btn-start btn-start4"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn btn-restart btn-restart4" disabled><i class="fas fa-redo"></i> Restart</button>
+                    <button class="btn btn-stop btn-stop4" disabled><i class="fas fa-stop"></i> Stop</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrics-section">
+            <h2 class="metrics-title">Server Metrics</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">CPU Usage</div>
+                    <div class="metric-value" id="cpu-usage">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Memory Usage</div>
+                    <div class="metric-value" id="memory-usage">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Disk Usage</div>
+                    <div class="metric-value" id="disk-usage">0%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Network</div>
+                    <div class="metric-value" id="network-usage">0 MB</div>
+                </div>
+            </div>
+
+            <div class="gauge-container">
+                <div class="gauge">
+                    <h3 class="gauge-title">CPU Usage</h3>
+                    <div class="gauge-body">
+                        <div class="gauge-fill" id="cpu-gauge"></div>
+                        <div class="gauge-cover">0%</div>
+                    </div>
+                </div>
+                
+                <div class="gauge">
+                    <h3 class="gauge-title">Memory Usage</h3>
+                    <div class="gauge-body">
+                        <div class="gauge-fill" id="memory-gauge"></div>
+                        <div class="gauge-cover">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
