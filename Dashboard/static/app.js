@@ -12,24 +12,53 @@ function showToast(type, message) {
     }, 3000);
 }
 
+// Function to check and fetch API logs
+async function checkApiLogs(apiNumber) {
+    try {
+        const response = await fetch(`http://192.168.1.101:8000/get_api_logs?api_number=${apiNumber}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log(`API ${apiNumber} logs received`);
+            console.log(`Status: true`);
+            console.log(`API ${apiNumber}: ${data.message}`);
+        } else {
+            console.log(`Status: false`);
+            console.log(`API ${apiNumber}: ${data.message}`);
+        }
+    } catch (error) {
+        console.error(`Error fetching logs for API ${apiNumber}:`, error);
+    }
+}
+
 // Function for getting API status
 async function checkApiStatus() {
     try {
         const response = await fetch('http://192.168.1.101:8000/status');
         const data = await response.json();
         
+        // Log API statuses
         console.log(`api1:${data.api1.status}`);
         console.log(`api2:${data.api2.status}`);
         console.log(`api3:${data.api3.status}`);
         console.log(`api4:${data.api4.status}`);
 
+        // Update UI with API statuses
         updateApiStatus('api1', data.api1.status);
         updateApiStatus('api2', data.api2.status);
         updateApiStatus('api3', data.api3.status);
         updateApiStatus('api4', data.api4.status);
         
+        // Update button states
         updateButtonStates(data);
 
+        // Check logs for running APIs
+        if (data.api1.status === 'running') checkApiLogs(1);
+        if (data.api2.status === 'running') checkApiLogs(2);
+        if (data.api3.status === 'running') checkApiLogs(3);
+        if (data.api4.status === 'running') checkApiLogs(4);
+
+        // Check again after 1 second
         setTimeout(checkApiStatus, 1000);
     } catch (error) {
         console.error('Error while getting status', error);
