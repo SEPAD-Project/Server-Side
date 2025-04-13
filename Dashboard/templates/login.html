@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Glass Login</title>
+    <link rel="stylesheet"` href="{{ url_for('static', filename='css/login_styles.css') }}">
+    <script src="{{ url_for('static', filename='js/login_script.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="particles-container" id="particles-js"></div>
+        <div class="dynamic-gradient"></div>
+    </div>
+    
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-content">
+                <div class="brand-logo">
+                    <div class="logo-circle"></div>
+                    <span>ADMIN PANEL</span>
+                </div>
+                <h2 class="login-title">SAP Program</h2>
+                <form class="login-form">
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" autocomplete="off" required>
+                        <label for="username" class="input-label">USER ID</label>
+                        <span class="input-highlight"></span>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" required>
+                        <label for="password" class="input-label">PASSKEY</label>
+                        <span class="input-highlight"></span>
+                    </div>
+                    <button type="submit" class="login-btn">
+                        <span>AUTHENTICATE</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</body>
+</html>
