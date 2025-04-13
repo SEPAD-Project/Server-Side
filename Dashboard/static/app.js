@@ -12,22 +12,78 @@ function showToast(type, message) {
     }, 3000);
 }
 
+// Object to store previous logs for each API
+const apiLogsHistory = {
+    1: '',
+    2: '',
+    3: '',
+    4: ''
+};
+
+// Function to display logs in the container (appends new logs)
+function displayLogs(apiNumber, newLogs) {
+    const logContainer = document.querySelector(`.log${apiNumber}`);
+    if (!logContainer) return;
+    
+    // Skip if no new logs
+    if (!newLogs || newLogs.trim() === '') return;
+    
+    // Add new logs to history
+    apiLogsHistory[apiNumber] += (apiLogsHistory[apiNumber] ? '\n' : '') + newLogs;
+    
+    // Clear container and re-render all logs
+    logContainer.innerHTML = '';
+    
+    // Split all logs by newlines and create log entries
+    const logEntries = apiLogsHistory[apiNumber].split('\n').filter(entry => entry.trim() !== '');
+    
+    logEntries.forEach(entry => {
+        const logEntry = document.createElement('div');
+        logEntry.className = 'log-entry';
+        
+        // Color code based on log type
+        if (entry.includes('404')) {
+            logEntry.classList.add('log-error');
+        } else if (entry.includes('200')) {
+            logEntry.classList.add('log-success');
+        } else if (entry.includes('WARNING')) {
+            logEntry.classList.add('log-warning');
+        } else {
+            logEntry.classList.add('log-info');
+        }
+        
+        logEntry.textContent = entry;
+        logContainer.appendChild(logEntry);
+    });
+    
+    // Auto-scroll to bottom
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
 // Function to check and fetch API logs
 async function checkApiLogs(apiNumber) {
     try {
         const response = await fetch(`http://192.168.1.101:8000/get_api_logs?api_number=${apiNumber}`);
         const data = await response.json();
         
-        if (data.success) {
-            console.log(`API ${apiNumber} logs received`);
-            console.log(`Status: true`);
-            console.log(`API ${apiNumber}: ${data.message}`);
-        } else {
-            console.log(`Status: false`);
-            console.log(`API ${apiNumber}: ${data.message}`);
+        if (data.success && data.message) {
+            console.log(`New logs received for API ${apiNumber}`);
+            displayLogs(apiNumber, data.message);
+        } else if (!data.success) {
+            console.log(`API ${apiNumber} logs not available`);
+            // Don't clear existing logs, just show status
+            const statusEntry = document.createElement('div');
+            statusEntry.className = 'log-entry log-warning';
+            statusEntry.textContent = `[${new Date().toLocaleTimeString()}] Logs not available - ${data.message}`;
+            document.querySelector(`.log${apiNumber}`).appendChild(statusEntry);
         }
     } catch (error) {
         console.error(`Error fetching logs for API ${apiNumber}:`, error);
+        // Don't clear existing logs, just show error
+        const errorEntry = document.createElement('div');
+        errorEntry.className = 'log-entry log-error';
+        errorEntry.textContent = `[${new Date().toLocaleTimeString()}] Error loading logs: ${error.message}`;
+        document.querySelector(`.log${apiNumber}`).appendChild(errorEntry);
     }
 }
 
@@ -186,8 +242,22 @@ function setupButtonListeners() {
     }
 }
 
+// Clear logs when API is stopped
+function clearApiLogs(apiNumber) {
+    apiLogsHistory[apiNumber] = '';
+    const logContainer = document.querySelector(`.log${apiNumber}`);
+    if (logContainer) {
+        logContainer.innerHTML = '';
+    }
+}
+
 // Start checking status and setup event listeners when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize log containers
+    for (let i = 1; i <= 4; i++) {
+        clearApiLogs(i);
+    }
+    
     checkApiStatus();
     setupButtonListeners();
     startMetricsUpdates();
