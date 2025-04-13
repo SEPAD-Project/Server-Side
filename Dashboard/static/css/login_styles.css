@@ -252,3 +252,82 @@ body {
 .login-btn:hover::before {
     left: 100%;
 }
+
+@media (max-width: 1024px) {
+    .login-container {
+        width: 90%;
+        max-width: 400px;
+        padding: 2rem;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .login-container {
+        width: 95%;
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .brand-logo {
+        margin-bottom: 1.5rem;
+    }
+    
+    .brand-logo span {
+        font-size: 1.3rem;
+    }
+    
+    .login-form {
+        gap: 1.2rem;
+    }
+    
+    .input-field input {
+        padding: 12px 12px 12px 36px;
+        font-size: 0.85rem;
+    }
+    
+    .login-btn {
+        padding: 12px;
+        font-size: 0.85rem;
+    }
+}
+
+
+@media (max-width: 360px) {
+    .login-container {
+        padding: 1.2rem;
+    }
+    
+    .input-field input {
+        padding: 10px 10px 10px 32px;
+    }
+    
+    .login-title {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+}
+@media (max-width: 480px) {
+    .login-title {
+        margin-bottom: 1.5rem;
+    }
+    
+    .input-field {
+        margin-bottom: 0.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .logo-circle {
+        animation: none; 
+    }
+    
+    .dynamic-gradient {
+        animation-duration: 20s;
+    }
+}
