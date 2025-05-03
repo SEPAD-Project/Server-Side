@@ -5,8 +5,8 @@ from email import encoders
 
 def send_styled_email(receiver, title, attachment_path=None):
     # Email configuration
-    EMAIL_ADDRESS = "sap.program.2583@gmail.com"
-    EMAIL_PASSWORD = "algj nsge thlg xpsl"
+    EMAIL_ADDRESS = "sepad.sender@gmail.com"
+    EMAIL_PASSWORD = "pnxr nskb ohbk seap "
     
     # Create message
     msg = MIMEMultipart()
