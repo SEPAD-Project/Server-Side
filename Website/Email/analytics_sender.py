@@ -3,10 +3,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-def send_styled_email(receiver, title, attachment_path=None):
+def send_analytics_email(receiver, title, attachment_path=None):
     # Email configuration
     EMAIL_ADDRESS = "sepad.sender@gmail.com"
-    EMAIL_PASSWORD = "pnxr nskb ohbk seap "
+    EMAIL_PASSWORD = "pnxr nskb ohbk seap"
     
     # Create message
     msg = MIMEMultipart()
@@ -50,4 +50,4 @@ if __name__ == "__main__":
     # Usage example
     receiver = "parsasafaie.2568@gmail.com"
     attachment_file = "test.pdf"  # Path to file
-    send_styled_email(receiver, 'Analytics Report', attachment_file)
+    send_analytics_email(receiver, 'Analytics Report', attachment_file)
