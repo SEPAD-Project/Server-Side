@@ -250,7 +250,7 @@ def logout():
     flash('You have been logged out successfully', 'success')
     return redirect(url_for('login'))
 
-@app.route('/website-webhook')
+@app.route('/website-webhook', methods=['POST'])
 def website_webhook():
     GITHUB_SECRET = 'websitewebhook'
 
