@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 16px;
+        }
+        .code {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: rgba(30, 30, 30, 0.5);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            color: #E0E0E0;
+            border-radius: 16px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        p{
+            color: #E0E0E0;
+            font-size: 16px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4ECDC4;
+            text-shadow: 2px 2px 8px rgba(78, 205, 196, 0.5)
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Email Verification</h2>
+        <p>Hello,</p>
+        <p>Please use the following verification code to complete your registration:</p>
+        
+        <div class="code">{{ verification_code }}</div>
+        
+        <p>If you didn't request this, please ignore this email.</p>
+        
+        <div class="footer">
+            <p>Best regards, SEPAD team</p>
+        </div>
+    </div>
+</body>
+</html>
