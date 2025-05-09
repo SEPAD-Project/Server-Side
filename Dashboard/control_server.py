@@ -267,9 +267,9 @@ def website_webhook():
 
     if request.headers.get('X-GitHub-Event') == 'push':
         try:
-            repo_path = 'C:\Users\Administrator\Documents\web'
-            subprocess.run(['git', 'pull'], cwd=repo_path, check=True)
+            repo_path = 'C:/Users/Administrator/Documents/web'
             subprocess.run(['taskkill', '/F', '/IM', 'waitress-serve.exe'], shell=True)
+            subprocess.run(['git', 'pull'], cwd=repo_path, check=True)
             
             bat_path = os.path.join(repo_path, 'run.bat')
             subprocess.Popen(bat_path, cwd=repo_path, shell=True)
