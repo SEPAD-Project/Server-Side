@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-def verify_code_sender(receiver, title, html_content=None, attachment_path=None):
+def verify_code_sender(receiver, title, html_content=None):
     # Email configuration
     EMAIL_ADDRESS = "sepad.sender@gmail.com"
     EMAIL_PASSWORD = "pnxr nskb ohbk seap"
@@ -20,18 +20,6 @@ def verify_code_sender(receiver, title, html_content=None, attachment_path=None)
         msg.attach(MIMEText(html_content, 'html'))
     else:
         msg.attach(MIMEText("No HTML content provided", 'plain'))
-    
-    # Attach file if provided
-    if attachment_path:
-        try:
-            with open(attachment_path, "rb") as attachment:
-                part = MIMEBase('application', 'octet-stream')
-                part.set_payload(attachment.read())
-            
-            encoders.encode_base64(part)
-        except Exception as e:
-            print(f"Error attaching file: {e}")
-            return
 
     # Send email
     try:
@@ -55,11 +43,9 @@ if __name__ == "__main__":
     <html>
         <body>
             <h1 style="color: #0066cc;">Hello!</h1>
-            <p>This is a <strong>styled</strong> email sent from Python.</p>
-            <p>Here's your analytics report attached.</p>
-            <p>Best regards,<br>Your Team</p>
+            <p>This is a test<p>
         </body>
     </html>
     """
     
-    verify_code_sender(receiver=receiver, title='Verify your email', html_content=html_content,)
+    verify_code_sender(receiver=receiver, title='Verify your email', html_content=html_content)
