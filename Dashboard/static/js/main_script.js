@@ -63,7 +63,7 @@ function displayLogs(apiNumber, newLogs) {
 // Function to check and fetch API logs
 async function checkApiLogs(apiNumber) {
     try {
-        const response = await fetch(`http://192.168.1.101:8000/get_api_logs?api_number=${apiNumber}`);
+        const response = await fetch(`http://185.4.28.110:8000/get_api_logs?api_number=${apiNumber}`);
         const data = await response.json();
         
         if (data.success && data.message) {
@@ -90,7 +90,7 @@ async function checkApiLogs(apiNumber) {
 // Function for getting API status
 async function checkApiStatus() {
     try {
-        const response = await fetch('http://192.168.1.101:8000/status');
+        const response = await fetch('http://185.4.28.110:8000/status');
         const data = await response.json();
         
         // Log API statuses
@@ -162,7 +162,7 @@ function updateButtonStates(data) {
 // Function for sending requests to API
 async function sendApiRequest(action, apiNumber) {
     try {
-        const url = `http://192.168.1.101:8000/${action}/${apiNumber}`;
+        const url = `http://185.4.28.110:8000/${action}/${apiNumber}`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -188,7 +188,7 @@ async function sendApiRequest(action, apiNumber) {
 
 // Function to update server metrics
 function updateMetrics() {
-    fetch('http://192.168.1.101:8000/metrics')
+    fetch('http://185.4.28.110:8000/metrics')
         .then(response => response.json())
         .then(metrics => {
             // Update numeric values
