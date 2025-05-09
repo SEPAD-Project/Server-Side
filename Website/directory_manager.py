@@ -139,78 +139,78 @@ def dm_delete_class(school_id, class_id):
 
 
 # ---------- Student Management Functions ---------- #
-def dm_create_student(school_id, class_id, student_id):
+def dm_create_student(school_id, class_id, student_code):
     """
     Creates student record with JSON and TXT files.
     
     Parameters:
         school_id (str): Parent school name (e.g., '500125')
         class_id (str): Parent class name (e.g., '1052')
-        student_id (str): Unique student identifier (e.g., '09295')
+        student_code (str): Unique student identifier (e.g., '09295')
     """
     class_path = os.path.join(BASE_PATH, school_id, class_id)
-    student_json_path = os.path.join(class_path, f"{student_id}.json")
-    student_txt_path = os.path.join(class_path, f"{student_id}.txt")
+    student_json_path = os.path.join(class_path, f"{student_code}.json")
+    student_txt_path = os.path.join(class_path, f"{student_code}.txt")
     
     try:
         with open(student_json_path, 'w') as json_file:
-            json.dump({"name": student_id}, json_file)
+            json.dump({"name": student_code}, json_file)
         with open(student_txt_path, 'w') as txt_file:
-            txt_file.write(f"Student Name: {student_id}\n")
-        out(f"Student '{student_id}' created in class '{class_id}' of school '{school_id}' successfully at '{class_path}'.")
+            txt_file.write(f"Student Name: {student_code}\n")
+        out(f"Student '{student_code}' created in class '{class_id}' of school '{school_id}' successfully at '{class_path}'.")
     except FileNotFoundError:
         out(f"Class '{class_id}' does not exist in school '{school_id}' at '{class_path}'.")
     except PermissionError:
-        out(f"Permission denied: Unable to create student '{student_id}' in class '{class_id}' of school '{school_id}' at '{class_path}'.")
+        out(f"Permission denied: Unable to create student '{student_code}' in class '{class_id}' of school '{school_id}' at '{class_path}'.")
 
 
-def dm_edit_student(school_id, class_id, old_student_id, new_student_id):
+def dm_edit_student(school_id, class_id, old_student_code, new_student_code):
     """
     Renames student files .
     
     Parameters:
         school_id (str): Parent school name (e.g., '500125')
         class_id (str): Parent class name (e.g., '1051')
-        old_student_id (str): Current student identifier (e.g., '09295')
-        new_student_id (str): New student identifier (e.g., '09296')
+        old_student_code (str): Current student identifier (e.g., '09295')
+        new_student_code (str): New student identifier (e.g., '09296')
     """
     class_path = os.path.join(BASE_PATH, school_id, class_id)
-    old_student_json_path = os.path.join(class_path, f"{old_student_id}.json")
-    old_student_txt_path = os.path.join(class_path, f"{old_student_id}.txt")
-    new_student_json_path = os.path.join(class_path, f"{new_student_id}.json")
-    new_student_txt_path = os.path.join(class_path, f"{new_student_id}.txt")
+    old_student_json_path = os.path.join(class_path, f"{old_student_code}.json")
+    old_student_txt_path = os.path.join(class_path, f"{old_student_code}.txt")
+    new_student_json_path = os.path.join(class_path, f"{new_student_code}.json")
+    new_student_txt_path = os.path.join(class_path, f"{new_student_code}.txt")
     
     try:
         os.rename(old_student_json_path, new_student_json_path)
         os.rename(old_student_txt_path, new_student_txt_path)
-        out(f"Student renamed from '{old_student_id}' to '{new_student_id}' in class '{class_id}' of school '{school_id}' successfully.")
+        out(f"Student renamed from '{old_student_code}' to '{new_student_code}' in class '{class_id}' of school '{school_id}' successfully.")
     except FileNotFoundError:
-        out(f"Student '{old_student_id}' does not exist in class '{class_id}' of school '{school_id}' at '{class_path}'.")
+        out(f"Student '{old_student_code}' does not exist in class '{class_id}' of school '{school_id}' at '{class_path}'.")
     except PermissionError:
-        out(f"Permission denied: Unable to rename student '{old_student_id}' to '{new_student_id}' in class '{class_id}' of school '{school_id}'.")
+        out(f"Permission denied: Unable to rename student '{old_student_code}' to '{new_student_code}' in class '{class_id}' of school '{school_id}'.")
 
 
-def dm_delete_student(school_id, class_id, student_id):
+def dm_delete_student(school_id, class_id, student_code):
     """
     Deletes student records (JSON and TXT files).
     
     Parameters:
         school_id (str): Parent school name (e.g., '500125')
         class_id (str): Parent class name (e.g., '1051')
-        student_id (str): Student identifier to delete (e.g., '09295')
+        student_code (str): Student identifier to delete (e.g., '09295')
     """
     class_path = os.path.join(BASE_PATH, school_id, class_id)
-    student_json_path = os.path.join(class_path, f"{student_id}.json")
-    student_txt_path = os.path.join(class_path, f"{student_id}.txt")
+    student_json_path = os.path.join(class_path, f"{student_code}.json")
+    student_txt_path = os.path.join(class_path, f"{student_code}.txt")
     
     try:
         os.remove(student_json_path)
         os.remove(student_txt_path)
-        out(f"Student '{student_id}' deleted from class '{class_id}' of school '{school_id}' successfully at '{class_path}'.")
+        out(f"Student '{student_code}' deleted from class '{class_id}' of school '{school_id}' successfully at '{class_path}'.")
     except FileNotFoundError:
-        out(f"Student '{student_id}' does not exist in class '{class_id}' of school '{school_id}' at '{class_path}'.")
+        out(f"Student '{student_code}' does not exist in class '{class_id}' of school '{school_id}' at '{class_path}'.")
     except PermissionError:
-        out(f"Permission denied: Unable to delete student '{student_id}' in class '{class_id}' of school '{school_id}' at '{class_path}'.")
+        out(f"Permission denied: Unable to delete student '{student_code}' in class '{class_id}' of school '{school_id}' at '{class_path}'.")
 
 
 # Example usage
