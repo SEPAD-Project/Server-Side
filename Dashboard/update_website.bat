@@ -4,4 +4,4 @@ git fetch --all
 git reset --hard origin/main
 git clean -fd
 taskkill /IM waitress-serve.exe /F
-start "" /B waitress-serve --port=2568 source.wsgi:app
+waitress-serve --listen=0.0.0.0:2568 source.wsgi:app
