@@ -252,33 +252,20 @@ def logout():
 
 @app.route('/website-webhook')
 def website_webhook():
-
     GITHUB_SECRET = 'websitewebhook'
-    signature = request.headers.get('X-Hub-Signature-256')
-    if not signature:
-        return jsonify({"error": "Missing signature"}), 403
 
+    sig = request.headers.get('X-Hub-Signature-256', '').replace('sha256=', '')
     body = request.get_data()
-    hash_obj = hmac.new(GITHUB_SECRET.encode(), body, hashlib.sha256)
-    expected_signature = f"sha256={hash_obj.hexdigest()}"
-
-    if not hmac.compare_digest(signature, expected_signature):
-        return jsonify({"error": "Invalid signature"}), 403
-
-    if request.headers.get('X-GitHub-Event') == 'push':
-        try:
-            repo_path = 'C:/Users/Administrator/Documents/web'
-            subprocess.run(['taskkill', '/F', '/IM', 'waitress-serve.exe'], shell=True)
-            subprocess.run(['git', 'pull'], cwd=repo_path, check=True)
-            
-            bat_path = os.path.join(repo_path, 'run.bat')
-            subprocess.Popen(bat_path, cwd=repo_path, shell=True)
-            
-            return jsonify({"status": "Successfully updated and restarted!"}), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-
-    return jsonify({"status": "Event ignored"}), 200
+    computed_sig = hmac.new(GITHUB_SECRET.encode(), body, hashlib.sha256).hexdigest()
+    
+    if not hmac.compare_digest(sig, computed_sig):
+        return "Invalid signature", 403
+    
+    try:
+        subprocess.run([r"update_website.bat"], shell=True, check=True)
+        return "Updated successfully", 200
+    except subprocess.CalledProcessError as e:
+        return f"Update failed: {e}", 500
     
 
 if __name__ == '__main__':
