@@ -16,6 +16,8 @@ echo ^>^>^> Terminating existing Celery and Flask processes...
 taskkill /IM waitress-serve.exe /F >nul 2>&1
 wmic process where "CommandLine like '%%celery%%' and name='python.exe'" call terminate >nul 2>&1
 wmic process where "CommandLine like '%%celery%%' and name='cmd.exe'" call terminate >nul 2>&1
+wmic process where "CommandLine like '%%waitress%%' and name='python.exe'" call terminate >nul 2>&1
+wmic process where "CommandLine like '%%waitress%%' and name='cmd.exe'" call terminate >nul 2>&1
 taskkill /FI "WINDOWTITLE eq Celery Worker" /F >nul 2>&1
 taskkill /FI "WINDOWTITLE eq Flask Server" /F >nul 2>&1
 
