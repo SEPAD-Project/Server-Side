@@ -27,7 +27,7 @@ start "Celery Worker" cmd /k "cd /d C:\Users\Administrator\Documents\WebApplicat
 
 echo.
 echo ^>^>^> Launching Flask Server with Waitress
-start "Flask Server" cmd /k "cd /d C:\Users\Administrator\Documents\WebApplication && .venv\Scripts\activate && waitress-serve --listen=0.0.0.0:2568 source.app:app"
+start "Flask Server" cmd /k "cd /d C:\Users\Administrator\Documents\WebApplication && .venv\Scripts\activate && waitress-serve --listen=0.0.0.0:85 source.app:app"
 
 echo.
 echo ============================================================
