@@ -54,10 +54,10 @@ cd Server-Side
       ```bash
       .venv\Scripts\activate.bat
       ```
-    3. Install required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+   3. Install required dependencies:
+       ```bash
+       pip install -r requirements.txt
+       ```
 
 ## Running apis using Control Server
    1. Navigate to dashboard directory:
