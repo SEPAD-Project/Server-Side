@@ -177,10 +177,7 @@ h1 {
     color: white;
 }
 
-/* Disabled button styles */
 .btn:disabled {
-    /* background-color: var(--disabled-color) !important;
-    color: var(--disabled-text) !important; */
     cursor: not-allowed !important;
     transform: none !important;
     box-shadow: none !important;
@@ -188,13 +185,11 @@ h1 {
     border: 1px solid #ddd !important;
 }
 
-/* Remove hover effects for disabled buttons */
 .btn:disabled:hover {
     opacity: 0.4 !important;
     transform: none !important;
 }
 
-/* Active button hover effects */
 .btn:not(:disabled):hover {
     opacity: 0.9;
     transform: translateY(-2px);

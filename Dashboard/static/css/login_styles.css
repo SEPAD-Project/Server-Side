@@ -22,13 +22,12 @@ body {
     overflow: hidden;
 }
 
-/* Background effects layer */
 .background-effects {
     position: fixed;
     width: 100%;
     height: 100%;
     z-index: 1;
-    pointer-events: none; /* Make sure background doesn't intercept clicks */
+    pointer-events: none;
 }
 
 .particles-container {
@@ -56,7 +55,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Main content layer */
 .login-wrapper {
     position: relative;
     display: flex;
