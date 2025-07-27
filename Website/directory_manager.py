@@ -2,15 +2,35 @@ import os
 import json
 import shutil
 import time 
+import platform
+
+def get_base_paths():
+    """Return appropriate paths based on the operating system"""
+    system = platform.system().lower()
+    
+    if system == 'windows':
+        return {
+            'log_file': r"C:\sap-project\log.txt",
+            'schools_dir': r"C:\sap-project\server\schools"
+        }
+    else:  # Linux, macOS, etc.
+        home_dir = os.path.expanduser("~")
+        return {
+            'log_file': os.path.join(home_dir, "sap-project", "log.txt"),
+            'schools_dir': os.path.join(home_dir, "sap-project", "server", "schools")
+        }
+
+PATHS = get_base_paths()
 
 def log_message(message):
-    BASE_PATH = "C://sap-project//log.txt"
+    LOG_PATH = PATHS['log_file']
     formatted_time = time.strftime("%Y-%m-%d %H:%M:%S")
-    with open(BASE_PATH, 'a') as file:
+    with open(LOG_PATH, 'a') as file:
         file.write(f"[{formatted_time}] {message}\n")
 
 # Define the base path where all schools will be created
-BASE_PATH = r"C:\sap-project\server\schools"
+BASE_PATH = PATHS['schools_dir']
+print(BASE_PATH)
 
 def out(x):
     """Prints the message and logs it using log_handler module."""
@@ -21,9 +41,9 @@ def out(x):
 if not os.path.exists(BASE_PATH):
     try:
         os.makedirs(BASE_PATH)
-        out('base path created >> C://sap-project//schools')
+        out(f'base path created >> {BASE_PATH}')
     except PermissionError:
-        out('Permission denied while creating base path >> C://sap-project//schools')
+        out(f'Permission denied while creating base path >> {BASE_PATH}')
 
 # ---------- School Management Functions ---------- #
 def dm_create_school(school_id):
