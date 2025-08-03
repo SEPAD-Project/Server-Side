@@ -3,7 +3,7 @@ echo ============================================================
 echo ^>^>^> Starting Web Update Process
 echo ============================================================
 
-cd /d C:\Users\Administrator\Documents\WebApplication
+cd /d C:\Users\Administrator\Documents\WebApplication\scripts
 
 echo ^>^>^> Fetching latest code from Git
 git fetch --all
