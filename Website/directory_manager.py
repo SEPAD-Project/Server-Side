@@ -197,12 +197,15 @@ def dm_edit_student(school_id, class_id, old_student_code, new_student_code):
     class_path = os.path.join(BASE_PATH, school_id, class_id)
     old_student_json_path = os.path.join(class_path, f"{old_student_code}.json")
     old_student_txt_path = os.path.join(class_path, f"{old_student_code}.txt")
+    old_student_image_path = os.path.join(class_path, f"{old_student_code}.jpg")
     new_student_json_path = os.path.join(class_path, f"{new_student_code}.json")
     new_student_txt_path = os.path.join(class_path, f"{new_student_code}.txt")
+    new_student_image_path = os.path.join(class_path, f"{new_student_code}.jpg")
     
     try:
         os.rename(old_student_json_path, new_student_json_path)
         os.rename(old_student_txt_path, new_student_txt_path)
+        os.rename(old_student_image_path, new_student_image_path)
         out(f"Student renamed from '{old_student_code}' to '{new_student_code}' in class '{class_id}' of school '{school_id}' successfully.")
     except FileNotFoundError:
         out(f"Student '{old_student_code}' does not exist in class '{class_id}' of school '{school_id}' at '{class_path}'.")
