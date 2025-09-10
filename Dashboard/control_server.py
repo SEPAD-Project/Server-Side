@@ -12,6 +12,7 @@ from pymysql import Error
 import hmac
 import hashlib
 import subprocess
+import mysql.connector
 
 config_path = os.path.join('../config.ini')
 config = ConfigParser()
@@ -24,6 +25,43 @@ api3 = config['ControlServer']['api3']
 api4 = config['ControlServer']['api4']
 
 LOG_DIR = os.path.join('../', 'apis', 'api_logs')
+
+def create_admin_table():
+    db = mysql.connector.connect(
+        host="185.4.28.110",  
+        user="root",
+        port=5000,   
+        password="sapprogram2583" 
+    )
+
+    cursor = db.cursor()
+    cursor.execute("CREATE DATABASE IF NOT EXISTS sap")
+    print('"SAP" DATABASE CREATED.')
+
+    # connect to database school
+    db.database = "sap"
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS admins (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(255),
+        password VARCHAR(255)
+    )
+    """)
+
+    cursor.execute("""
+    INSERT INTO `sap`.`admins` (`id`, `username`, `password`) VALUES (`1`, `admin`, `admin`);
+    """)
+    print('"admins" TABLE CREATED.')
+
+    # closing connection
+    cursor.close()
+    db.close()
+
+try:
+    create_admin_table()
+except Exception:
+    print('Error occured while creating admin table')
+
 
 db_config = {
     'host': config['Database']['Host'],
