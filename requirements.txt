@@ -5,3 +5,4 @@ opencv-python
 psutil
 mysql-connector-python
 pyftpdlib
+pyautogui
