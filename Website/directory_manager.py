@@ -207,8 +207,9 @@ def dm_edit_student(school_id, class_id, old_student_code, new_student_code):
         os.rename(old_student_txt_path, new_student_txt_path)
         os.rename(old_student_image_path, new_student_image_path)
         out(f"Student renamed from '{old_student_code}' to '{new_student_code}' in class '{class_id}' of school '{school_id}' successfully.")
-    except FileNotFoundError:
+    except Exception as e:
         out(f"Student '{old_student_code}' does not exist in class '{class_id}' of school '{school_id}' at '{class_path}'.")
+        out(str(e))
     except PermissionError:
         out(f"Permission denied: Unable to rename student '{old_student_code}' to '{new_student_code}' in class '{class_id}' of school '{school_id}'.")
 

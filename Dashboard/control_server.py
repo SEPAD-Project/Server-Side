@@ -11,9 +11,8 @@ from pymysql import connect
 from pymysql import Error
 import hmac
 import hashlib
-import subprocess
-import mysql.connector
 
+# Read configuration file
 config_path = os.path.join('../config.ini')
 config = ConfigParser()
 config.read(config_path)
@@ -27,42 +26,61 @@ api4 = config['ControlServer']['api4']
 LOG_DIR = os.path.join('../', 'apis', 'api_logs')
 
 def create_admin_table():
-    db = mysql.connector.connect(
-        host="185.4.28.110",  
-        user="root",
-        port=5000,   
-        password="sapprogram2583" 
-    )
+    """
+    Create admin table and database using pymysql
+    """
+    try:
+        # Connect to MySQL server (without specifying database)
+        db = connect(
+            host="185.4.28.110",  
+            user="root",
+            port=5000,   
+            password="sapprogram2583" 
+        )
+        
+        cursor = db.cursor()
+        
+        # Create database if not exists
+        cursor.execute("CREATE DATABASE IF NOT EXISTS sap")
+        print('"SAP" DATABASE CREATED.')
+        
+        # Select the database
+        cursor.execute("USE sap")
+        
+        # Create admin table if not exists
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS admins (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255),
+            password VARCHAR(255)
+        )
+        """)
+        print('"admins" TABLE CREATED.')
+        
+        # Insert default admin user if not exists
+        cursor.execute("""
+        INSERT IGNORE INTO admins (id, username, password) 
+        VALUES (1, 'admin', 'admin')
+        """)
+        print('Default admin user created.')
+        
+        # Commit changes and close connection
+        db.commit()
+        cursor.close()
+        db.close()
+        
+    except Error as e:
+        print(f"Database error in create_admin_table: {e}")
+    except Exception as e:
+        print(f"Unexpected error in create_admin_table: {e}")
 
-    cursor = db.cursor()
-    cursor.execute("CREATE DATABASE IF NOT EXISTS sap")
-    print('"SAP" DATABASE CREATED.')
-
-    # connect to database school
-    db.database = "sap"
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS admins (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(255),
-        password VARCHAR(255)
-    )
-    """)
-
-    cursor.execute("""
-    INSERT INTO `sap`.`admins` (`id`, `username`, `password`) VALUES (`1`, `admin`, `admin`);
-    """)
-    print('"admins" TABLE CREATED.')
-
-    # closing connection
-    cursor.close()
-    db.close()
-
+# Attempt to create admin table
 try:
     create_admin_table()
-except Exception:
-    print('Error occured while creating admin table')
+except Exception as e:
+    print(f'Error occurred while creating admin table: {e}')
 
-
+# Database configuration for application use
 db_config = {
     'host': config['Database']['Host'],
     'database': config['Database']['Database'],
@@ -76,6 +94,9 @@ app.secret_key = 'sapprog_seckey'
 CORS(app)
 
 class FlaskAppManager:
+    """
+    Manager class for controlling Flask applications
+    """
     def __init__(self, file_path):
         self.file_path = file_path
         self.file_path = os.path.abspath("../"+str(file_path))
@@ -83,10 +104,12 @@ class FlaskAppManager:
         self._check_file_exists()
 
     def _check_file_exists(self):
+        """Verify that the API file exists"""
         if not os.path.isfile(self.file_path):
             raise FileNotFoundError(f"API file not found: {self.file_path}")
 
     def start(self, message='Started successfully'):
+        """Start the Flask application"""
         if self.is_running():
             return {'status': 'error', 'message': 'Already running'}
         
@@ -101,6 +124,7 @@ class FlaskAppManager:
             return {'status': 'error', 'message': str(e)}
 
     def stop(self):
+        """Stop the Flask application"""
         if not self.is_running():
             return {'status': 'error', 'message': 'Not running'}
         
@@ -112,15 +136,18 @@ class FlaskAppManager:
             return {'status': 'error', 'message': str(e)}
 
     def restart(self):
+        """Restart the Flask application"""
         stop_result = self.stop()
         if stop_result['status'] == 'error':
             return stop_result
         return self.start(message='RESTARTED Successfully')
 
     def is_running(self):
+        """Check if the application is running"""
         return self.process and self.process.poll() is None
 
     def get_status(self):
+        """Get current status of the application"""
         return 'running' if self.is_running() else 'stopped'
 
 # Initialize managers for APIs
@@ -131,8 +158,10 @@ apps = [
     FlaskAppManager(Path(api4))
 ]
 
+# API Control Routes
 @app.route('/start/<int:api_number>', methods=['POST', 'GET'])
 def start_api(api_number):
+    """Start a specific API"""
     if 1 <= api_number <= 4:
         result = apps[api_number-1].start()
         return jsonify(result)
@@ -140,6 +169,7 @@ def start_api(api_number):
 
 @app.route('/stop/<int:api_number>', methods=['POST', 'GET'])
 def stop_api(api_number):
+    """Stop a specific API"""
     if 1 <= api_number <= 4:
         result = apps[api_number-1].stop()
         return jsonify(result)
@@ -147,6 +177,7 @@ def stop_api(api_number):
 
 @app.route('/restart/<int:api_number>', methods=['POST', 'GET'])
 def restart_api(api_number):
+    """Restart a specific API"""
     if 1 <= api_number <= 4:
         result = apps[api_number-1].restart()
         return jsonify(result)
@@ -154,6 +185,7 @@ def restart_api(api_number):
 
 @app.route('/status', methods=['GET'])
 def status():
+    """Get status of all APIs"""
     status_report = {}
     for i, manager in enumerate(apps, 1):
         status_report[f'api{i}'] = {
@@ -165,6 +197,7 @@ def status():
 
 @app.route('/metrics')
 def get_metrics():
+    """Get system metrics"""
     cpu = psutil.cpu_percent()
     mem = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
@@ -178,7 +211,8 @@ def get_metrics():
 
 @app.route('/get_api_logs', methods=['GET'])
 def get_api_logs():
-    # get api number
+    """Retrieve and clear API logs"""
+    # Get API number from request parameters
     api_number = request.args.get('api_number')
     
     if not api_number:
@@ -188,10 +222,10 @@ def get_api_logs():
             'message': 'API number is required'
         }), 400
     
-    # log file name
+    # Construct log file path
     log_file = os.path.join(LOG_DIR, f'api{api_number}_log.txt')
     
-    # check file exists
+    # Check if log file exists
     if not os.path.exists(log_file):
         return jsonify({
             'success': False,
@@ -200,15 +234,15 @@ def get_api_logs():
         }), 404
     
     try:
-        # read fils
+        # Read log file content
         with open(log_file, 'r') as f:
             content = f.read()
         
-        # clean file content
+        # Clear log file after reading
         with open(log_file, 'w') as f:
             f.write('')
         
-        # return success message
+        # Return success response with log content
         return jsonify({
             'success': True,
             'api_number': api_number,
@@ -222,15 +256,19 @@ def get_api_logs():
             'message': f'Error processing log file: {str(e)}'
         }), 500
 
+# Authentication Routes
 @app.route('/')
 def home():
+    """Home route - redirect to dashboard if logged in, otherwise to login"""
     if 'username' in session:
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """User login endpoint"""
     if request.method == 'POST':
+        # Handle both JSON and form data
         if request.is_json:
             data = request.get_json()
             username = data.get('username', '').strip()
@@ -239,20 +277,20 @@ def login():
             username = request.form.get('username', '').strip()
             password = request.form.get('password', '')
         
+        # Validate input
         if not username or not password:
             return jsonify({'success': False, 'message': 'Username and password are required'}), 400
         
         try:
+            # Connect to database and verify credentials
             with connect(**db_config) as connection:
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT username, password FROM admins WHERE username = %s", (username,))
                     result = cursor.fetchone()
-                    print(result)
                 
                 # Verify user exists and password is correct
-                if result[1] == password:
-                    session['username'] = result[1]
-
+                if result and result[1] == password:
+                    session['username'] = result[0]  # Store username in session
                     return jsonify({
                         'success': True,
                         'redirect': url_for('dashboard')
@@ -262,7 +300,6 @@ def login():
                         'success': False,
                         'message': 'Invalid username or password'
                     }), 401
-                
 
         except Error as e:
             print(f"Database error: {e}")
@@ -275,6 +312,7 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
+    """Dashboard page - requires authentication"""
     if 'username' not in session:
         flash('Please login to access this page', 'error')
         return redirect(url_for('login'))
@@ -283,15 +321,17 @@ def dashboard():
 
 @app.route('/logout')
 def logout():
-    # Clear session data
+    """Logout user and clear session"""
     session.clear()
     flash('You have been logged out successfully', 'success')
     return redirect(url_for('login'))
 
 @app.route('/website-webhook', methods=['POST'])
 def website_webhook():
+    """GitHub webhook endpoint for automatic website updates"""
     GITHUB_SECRET = 'websitewebhook'
 
+    # Verify webhook signature
     sig = request.headers.get('X-Hub-Signature-256', '').replace('sha256=', '')
     body = request.get_data()
     computed_sig = hmac.new(GITHUB_SECRET.encode(), body, hashlib.sha256).hexdigest()
@@ -300,11 +340,11 @@ def website_webhook():
         return "Invalid signature", 403
     
     try:
+        # Execute update script
         subprocess.run([r"update_website.bat"], shell=True, check=True)
         return "Updated successfully", 200
     except subprocess.CalledProcessError as e:
         return f"Update failed: {e}", 500
-    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
