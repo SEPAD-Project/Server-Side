@@ -176,7 +176,7 @@ def dm_create_student(school_id, class_id, student_code):
         with open(student_json_path, 'w') as json_file:
             json.dump({"name": student_code}, json_file)
         with open(student_txt_path, 'w') as txt_file:
-            txt_file.write(f"Student Name: {student_code}\n")
+            txt_file.write(f"No messages yet\n")
         out(f"Student '{student_code}' created in class '{class_id}' of school '{school_id}' successfully at '{class_path}'.")
     except FileNotFoundError:
         out(f"Class '{class_id}' does not exist in school '{school_id}' at '{class_path}'.")
