@@ -187,34 +187,7 @@ async function sendApiRequest(action, apiNumber) {
 }
 
 // Function to update server metrics
-function updateMetrics() {
-    fetch('http://185.4.28.110:800/metrics')
-        .then(response => response.json())
-        .then(metrics => {
-            // Update numeric values
-            document.getElementById('cpu-usage').textContent = `${metrics.cpu}%`;
-            document.getElementById('memory-usage').textContent = `${metrics.memory}%`;
-            document.getElementById('disk-usage').textContent = `${metrics.disk}%`;
-            document.getElementById('network-usage').textContent = `${metrics.network} MB`;
 
-            // Update gauge rotations
-            document.getElementById('cpu-gauge').style.transform = 
-                `rotate(${(metrics.cpu / 100) * 0.5}turn)`;
-            document.getElementById('memory-gauge').style.transform = 
-                `rotate(${(metrics.memory / 100) * 0.5}turn)`;
-
-            // Update gauge labels
-            document.querySelectorAll('.gauge-cover').forEach((cover, index) => {
-                cover.textContent = index === 0 ? 
-                    `${metrics.cpu.toFixed(1)}%` : 
-                    `${metrics.memory.toFixed(1)}%`;
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching metrics:', error);
-            showToast('error', 'Failed to fetch server metrics');
-        });
-}
 
 // Function to periodically update metrics
 function startMetricsUpdates() {
